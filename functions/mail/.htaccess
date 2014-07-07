@@ -1,0 +1,6 @@
+Options -Indexes
+DirectoryIndex index.php index.html config.inc.php /index.php
+<Files ~ "\.php$">  
+Order Allow,Deny
+Deny from All
+</Files>
