@@ -40,9 +40,15 @@ function exceptions_error_handler($severity, $message, $filename, $lineno) {
 function info($info) {
     // set connection var
     global $db;
+    $info = "";
 
     // escape injection string info var
-    $info = mysql_real_escape_string(stripslashes($info));
+    try {
+        $info .= mysql_real_escape_string(stripslashes($info));
+    } catch (Exception $exc) {
+//        echo $exc->getTraceAsString();
+    }
+
     // get user ip
     $ip = $_SERVER['REMOTE_ADDR'];
     // get current time
@@ -61,9 +67,15 @@ function error($error) {
 
     // set connection var
     global $db;
+    $error = "";
 
     // escape injection string error var
-    $error = mysql_real_escape_string(stripslashes($error));
+    try {
+        $error .= stripslashes($error);
+    } catch (Exception $exc) {
+        $error .= $exc->getTraceAsString();
+    }
+
     // get user ip
     $ip = $_SERVER['REMOTE_ADDR'];
     // get current time
@@ -271,6 +283,30 @@ function get_survey_answers($survey_id) {
     return $answers;
 }
 
+// get all associated survey questions
+function get_survey_questions($survey_id) {
+    // set connection var
+    global $db;
+
+    //query to get all associated survey answers
+    $sql = "SELECT id
+            FROM questions
+            WHERE is_active = '1' AND survey = '$survey_id';";
+
+    $questions_data = array();
+    $questions = array();
+    foreach ($db->query($sql) as $key => $value) {
+        $questions_data[$key] = $value;
+        foreach ($questions_data[$key] as $subkey => $subvalue) {
+            if (is_int($subkey)) {
+                $questions[] = $subvalue;
+            }
+        }
+    }
+
+    return $questions;
+}
+
 // get surveys by creator's user_id
 function get_surveys_by_creator($user_id) {
     // set connection var
@@ -374,64 +410,78 @@ function get_votes_by_answer($answer_id) {
 
 // get session answers
 function get_session_answers() {
-    if (isset($_SESSION['answers'])) {
-        $answers = unserialize($_SESSION['answers']);
+    $session_answers = array();
+    if (isset($_SESSION['session_answers'])) {
+        $session_answers = unserialize($_SESSION['session_answers']);
     } else {
-//        // set empty answer obj
-//        $answer = new Answer;
-//
-//        // set empty new answers array of answers
-//        $answers = array($answer);
-        // set empty new answers array of answers
-        $answers = array();
+        $_SESSION['session_answers'] = serialize($session_answers);
     }
-    return $answers;
+    return $session_answers;
 }
 
 // get session surveys
 function get_session_survey() {
-    if (isset($_SESSION['survey'])) {
-        $survey = unserialize($_SESSION['survey']);
+    $session_survey = new Survey();
+    if (isset($_SESSION['session_survey'])) {
+        $session_survey = unserialize($_SESSION['session_survey']);
+    } elseif (isset($_SESSION['surveyCreatorViewSurveyId'])) {
+
+        // get session survey
+        $session_survey->get_from_db($_SESSION['surveyCreatorViewSurveyId']);
+        $_SESSION['session_survey'] = serialize($session_survey);
+
+        if (!isset($_SESSION['session_groups'])) {
+            $session_groups = array(
+                'type' => '',
+                'student' => array(),
+                'staff' => array(),
+                'staff_departments' => array(),
+                'local' => array());
+
+            $surveyStudentGroups = unserialize($session_survey->getStudentGroups());
+            if (is_array($surveyStudentGroups)) {
+                $session_groups['student'] = $surveyStudentGroups;
+            }
+
+            $surveyStaffGroups = unserialize($session_survey->getStaffGroups());
+            if (is_array($surveyStaffGroups)) {
+                $session_groups['staff_departments'] = $surveyStaffGroups;
+            }
+
+            $surveyLocalGroups = unserialize($session_survey->getLocalGroups());
+            if (is_array($surveyLocalGroups)) {
+                $session_groups['local'] = $surveyLocalGroups;
+            }
+
+            $_SESSION['session_groups'] = serialize($session_groups);
+        }
     } else {
-        // set empty answer obj
-        $survey = new Survey;
-        if (isset($_SESSION['survey_id'])) {
-            $survey->get_from_db($_SESSION['survey_id']);
-            if (!isset($_SESSION['session_group'])) {
-                $session_group = array('type' => '', 'student' => array(), 'staff' => array(), 'staff_departments' => array(), 'local' => array());
-
-                $surveyStudentGroups = unserialize($survey->getStudentGroups());
-                if (is_array($surveyStudentGroups)) {
-                    $session_group['student'] = $surveyStudentGroups;
-                }
-
-                $surveyStaffGroups = unserialize($survey->getStaffGroups());
-                if (is_array($surveyStaffGroups)) {
-                    $session_group['staff_departments'] = $surveyStaffGroups;
-                }
-
-                $surveyLocalGroups = unserialize($survey->getLocalGroups());
-                if (is_array($surveyLocalGroups)) {
-                    $session_group['local'] = $surveyLocalGroups;
-                }
-
-                $_SESSION['session_group'] = serialize($session_group);
-            }
-            if (!isset($_SESSION['answers'])) {
-                $answers = array();
-                $surveyAnswers = get_survey_answers($survey->getId());
-                if (!empty($surveyAnswers)) {
-                    foreach ($surveyAnswers as $answer_id) {
-                        $answer = new Answer();
-                        $answer->get_from_db($answer_id);
-                        array_push($answers, $answer);
-                    }
-                }
-                $_SESSION['answers'] = serialize($answers);
-            }
+        if (!isset($_SESSION['session_groups'])) {
+            $session_groups = array(
+                'type' => '',
+                'student' => array(),
+                'staff' => array(),
+                'staff_departments' => array(),
+                'local' => array());
+            $_SESSION['session_groups'] = serialize($session_groups);
         }
     }
-    return $survey;
+    return $session_survey;
+}
+
+// get session surveys
+function get_session_question() {
+    $session_question = new Question();
+    if (isset($_SESSION['session_question'])) {
+        $session_question = unserialize($_SESSION['session_question']);
+    } elseif (isset($_SESSION['surveyCreatorViewQuestionId'])) {
+        // get session question
+        $session_question->get_from_db($_SESSION['surveyCreatorViewQuestionId']);
+        $_SESSION['session_question'] = serialize($session_question);
+    } else {
+        $_SESSION['session_question'] = serialize($session_question);
+    }
+    return $session_question;
 }
 
 // get session user
@@ -479,12 +529,11 @@ function get_group_by_name($group_name) {
 
 // get session group
 function get_session_group() {
+    $group = new Group;
     if (isset($_SESSION['group'])) {
-        $group = new Group;
         $group = unserialize($_SESSION['group']);
     } else {
         // set empty group obj
-        $group = new Group;
         if (isset($_SESSION['group_id'])) {
             $group->get_from_db($_SESSION['group_id']);
         }
@@ -495,16 +544,15 @@ function get_session_group() {
 
 // get session groups
 function get_session_groups() {
-    if (isset($_SESSION['groups'])) {
-        $groups = unserialize($_SESSION['groups']);
+    $session_groups = array();
+    if (isset($_SESSION['session_groups'])) {
+        $session_groups = unserialize($_SESSION['session_groups']);
     } else {
-        // set empty group obj
-        $group = new Group;
-
-        // set empty new groups array of groups
-        $groups = array($group);
+        // set array of groups
+        $session_groups = array();
+        $_SESSION['session_groups'] = serialize($session_groups);
     }
-    return $groups;
+    return $session_groups;
 }
 
 // get susi groups
@@ -600,23 +648,21 @@ function get_user_staff_groups($user_id) {
     $user_groups = array();
     foreach ($db->query($sql) as $key => $value) {
         $groups_data[$key] = $value;
-        foreach ($groups_data[$key] as $subkey => $subvalue) {
-            if (is_int($subkey)) {
-                $groups[] = $subvalue;
-            }
+        if(isset($groups_data[$key][0])) {
+            $groups = $groups_data[$key][0];
         }
     }
 
-    if (!empty($groups[0])) {
+    if ($groups != "") {
         try {
-            $user_groups = unserialize($groups[0]);
+            $user_groups = unserialize($groups);
         } catch (ErrorException $e) {
             $e->getMessage();
-            $error = "User: '$user_id' student_groups: " . $e;
+            $error = "User: '$user_id' student_groups: " . $e->getMessage();
             error($error);
         }
     }
-
+    
     return $user_groups;
 }
 
@@ -631,27 +677,25 @@ function get_user_student_groups($user_id) {
             WHERE is_active = '1' AND id = '$user_id';";
 
     $groups_data = array();
-    $groups = array();
+    $groups = "";
     $user_groups = array();
     foreach ($db->query($sql) as $key => $value) {
         $groups_data[$key] = $value;
-        foreach ($groups_data[$key] as $subkey => $subvalue) {
-            if (is_int($subkey)) {
-                $groups[] = $subvalue;
-            }
+        if(isset($groups_data[$key][0])) {
+            $groups = $groups_data[$key][0];
         }
     }
 
-    if (!empty($groups[0])) {
+    if ($groups != "") {
         try {
-            $user_groups = unserialize($groups[0]);
+            $user_groups = unserialize($groups);
         } catch (ErrorException $e) {
             $e->getMessage();
-            $error = "User: '$user_id' student_groups: " . $e;
+            $error = "User: '$user_id' student_groups: " . $e->getMessage();
             error($error);
         }
     }
-
+    
     return $user_groups;
 }
 
@@ -670,23 +714,21 @@ function get_user_local_groups($user_id) {
     $user_groups = array();
     foreach ($db->query($sql) as $key => $value) {
         $groups_data[$key] = $value;
-        foreach ($groups_data[$key] as $subkey => $subvalue) {
-            if (is_int($subkey)) {
-                $groups[] = $subvalue;
-            }
+        if(isset($groups_data[$key][0])) {
+            $groups = $groups_data[$key][0];
         }
     }
 
-    if (!empty($groups[0])) {
+    if ($groups != "") {
         try {
-            $user_groups = unserialize($groups[0]);
+            $user_groups = unserialize($groups);
         } catch (ErrorException $e) {
             $e->getMessage();
-            $error = "User: '$user_id' local groups: " . $e;
+            $error = "User: '$user_id' student_groups: " . $e->getMessage();
             error($error);
         }
     }
-
+    
     return $user_groups;
 }
 
@@ -717,11 +759,20 @@ function select_page($page) {
         case 'survey_user':
             require_once ROOT_DIR . 'pages/survey_user.php';
             break;
-        case 'survey_question':
-            require_once ROOT_DIR . 'pages/survey_question.php';
+        case 'survey_edit':
+            require_once ROOT_DIR . 'pages/survey_edit.php';
             break;
         case 'help':
             require_once ROOT_DIR . 'pages/help.php';
+            break;
+        case 'admin_survey':
+            require_once ROOT_DIR . 'pages/admin_survey.php';
+            break;
+        case 'user_survey':
+            require_once ROOT_DIR . 'pages/user_survey.php';
+            break;
+        case 'survey_add_answer':
+            require_once ROOT_DIR . 'pages/survey_add_answer.php';
             break;
         case 'help_page':
             require_once ROOT_DIR . 'pages/help.php';
@@ -872,7 +923,7 @@ function send_mail($title, $text) {
     $mail->SMTPAuth = true;                                     // Enable SMTP authentication
     $mail->SMTPSecure = 'ssl';                                  // secure transfer enabled REQUIRED for GMail
     $mail->Username = 'schedule@ucc.uni-sofia.bg';              // SMTP username
-    $mail->Password = 'schedule';	                             // SMTP password 
+    $mail->Password = 'schedule';                              // SMTP password 
     $mail->From = "$mailFrom";                                  // Sender email	
     $mail->FromName = "$mailFromName";                          // Sender name
 
@@ -959,7 +1010,7 @@ function survey_submit() {
 
     // escape mysql injections array
     foreach ($_POST as $key => $value) {
-        $post[$key] = stripslashes(mysql_real_escape_string($value));
+        $post[$key] = stripslashes($value);
     }
 
     $post_keys = array_keys($_POST);
@@ -967,43 +1018,39 @@ function survey_submit() {
     $pattern = '/' . $substring . '/';
     $survey_keys = preg_grep($pattern, $post_keys);
 
+
     foreach ($survey_keys as $key) {
-//    echo '<br/><br/>';
-//    echo 'UserId: ' . $user->getId();
-//    echo '<br/>';
-//    echo 'Answer name: ' . $key;
+        // get question
         preg_match_all('!\d+!', $key, $matches);
-        $survey_id = $matches[0][0];
-//    echo 'SurveyId: ' . $survey_id;
-//    echo '<br/>';
+        $question = $matches[0][0];
+
+        //get answer value
         $answer_value = $_POST[$key];
-//    echo 'Answer: ' . $answer_value;
-//    echo '<br/>';
+
+        //get answer id
         $answer_id = $answer_value;
         if (isset($matches[0][1])) {
             $answer_id = $matches[0][1];
         }
-//    echo 'AnswerId: ' . $answer_id;
-//    echo '<br/>';
-        $time_now = date("Y-m-d H:i:s");
-//    echo $time_now;
-//    die();
 
+        // get current time
+        $time_now = date("Y-m-d H:i:s");
+
+        // create vote object
         $vote = new Vote();
         $vote->setIsActive(1);
         $vote->setCreatedOn($time_now);
         $vote->setLastEditedOn($time_now);
         $vote->setUser($user->getId());
-        $vote->setSurvey($survey_id);
+        $vote->setQuestion($question);
         $vote->setAnswer($answer_id);
         $vote->setValue($answer_value);
-
         $vote->store_in_db();
     }
 
     // set message cookie
     $cookie_key = 'msg';
-    $cookie_value = 'Благодарим Ви за попълнената анкета!';
+    $cookie_value = 'Благодарим Ви за отговорения въпрос!';
     setcookie($cookie_key, $cookie_value, time() + 1);
     header('location:' . ROOT_DIR . '?page=survey');
 }
@@ -1065,179 +1112,169 @@ function login_ldap($username, $password) {
     // ldap connecting
     // must be a valid LDAP server!
     $ds = ldap_connect("ds.uni-sofia.bg");
-    
+
     // try ldap bind
     if ($ds) {
         try {
-        // binding to ldap server
-        $user_dn = "uid=$username,ou=People,dc=uni-sofia,dc=bg";
-        $userbind = ldap_bind($ds, $user_dn, $password);
-        // verify binding
-        if ($userbind) {
-            
-            header('Content-Type: text/html; charset=utf-8');
-            
-            // set ldap bind variables
-            $ldaprdn = 'uid=survey,ou=People,dc=uni-sofia,dc=bg';
-            $ldappass = 'fee2noh7Sh';
-
             // binding to ldap server
-            $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
-
+            $user_dn = "uid=$username,ou=People,dc=uni-sofia,dc=bg";
+            $userbind = ldap_bind($ds, $user_dn, $password);
             // verify binding
-            if ($ldapbind) {
-                
-                // data array 
-                $array = array("displayname", "mail", "title", "suscientifictitle", "suscientificdegree", "suFaculty", "suDepartment", "suStudentFaculty", "ou", "objectclass");
-                //$array = array("displayname", "mail", "title");
-                $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=$username)", $array, 0, 0, 0);
-                
-                $pass = md5($password);
-                $email = "";
-                $givenname = "";
-                $title = "";
-                $staff_groups = "";
-                $student_groups = "";
-                $staff_groups_id = array();
-                $student_groups_id = array();
-                $student_groups_array = array();
-                $staff_groups_array = array();
+            if ($userbind) {
 
-                $info = ldap_get_entries($ds, $sr);
-                
-                for ($i = 0; $i < count($info); $i++) {
-                    if (isset($info[$i]['mail'])) {
-                        $email = $info[$i]['mail'][0];
-                    }
-                    if (isset($info[$i]['displayname'])) {
-                        $givenname = $info[$i]['displayname'][0];
-                    }
-                    if (isset($info[$i]['title'])) {
-                        $title .= $info[$i]['title'][0];
-                    }
-                    if (isset($info[$i]['suscientifictitle'])) {
-                        $title .= " " . $info[$i]['suscientifictitle'][0];
-                    }
-                    if (isset($info[$i]['suscientificdegree'])) {
-                        $title .= " " . $info[$i]['suscientificdegree'][0];
-                    }
-                    if (isset($info[$i]['objectclass'])) {
-                        if (in_array("suStudentPerson", $info[$i]['objectclass']) && !in_array("suFacultyPerson", $info[$i]['objectclass'])) {
-                            if (isset($info[$i]['sustudentfaculty'])) {
-                                foreach ($info[$i]['sustudentfaculty'] as $student_group) {
-                                    if (!is_int($student_group)) {
-                                        array_push($student_groups_array, $student_group);
-                                    }
-                                }
-                            } elseif (isset($info[$i]['sufaculty'])) {
-                                foreach ($info[$i]['sufaculty'] as $student_group) {
-                                    if (!is_int($student_group)) {
-                                        array_push($student_groups_array, $student_group);
-                                    }
-                                }
-                            }
-                        }
-                        if (in_array("suStaffPerson", $info[$i]['objectclass']) || in_array("suFacultyPerson", $info[$i]['objectclass'])) {
-                            if (isset($info[$i]['sufaculty'])) {
-                                foreach ($info[$i]['sufaculty'] as $staff_group) {
-                                    if (!is_int($staff_group) && !in_array($staff_group, $student_groups_array)) {
-                                        array_push($staff_groups_array, $staff_group);
-                                    }
-                                }
-                            }
-                            if (isset($info[$i]['sudepartment'])) {
-                                foreach ($info[$i]['sudepartment'] as $staff_group) {
-                                    if (!is_int($staff_group)) {
-                                        array_push($staff_groups_array, $staff_group);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                header('Content-Type: text/html; charset=utf-8');
 
-                // get the ids of the staff groups
-                foreach ($staff_groups_array as $staff_group_name) {
-                    $staff_group_ids = get_group_by_name($staff_group_name);
-                    if(!empty($staff_group_ids)) {
-                        foreach($staff_group_ids as $group_id) {
-                            $group = new Group();
-                            $group->get_from_db($group_id);
-                            if( $group->getLocal() == "0"
-                                && $group->getStudent() == "0"
-                                && $group->getStaff() == "1") {
-                                array_push($staff_groups_id, $group_id);
-                            }
-                        }
-                    }
-                }
-                
-                // get the ids of the student groups
-                foreach ($student_groups_array as $student_group_name) {
-                    $student_group_ids = get_group_by_name($student_group_name);
-                    if(!empty($student_group_ids)) {
-                        foreach($student_group_ids as $group_id) {
-                            $group = new Group();
-                            $group->get_from_db($group_id);
-                            if( $group->getLocal() == "0"
-                                && $group->getStudent() == "1"
-                                && $group->getStaff() == "0") {
-                                array_push($student_groups_id, $group_id);
-                            }
-                        }
-                    }
-                }
-                
-                // set common properties
-                $staff_groups = serialize($staff_groups_id);
-                $student_groups = serialize($student_groups_id);
-                $user = new User();
-                
-                $user->setUsername($username);
-                $user->setPassword($pass);
-                $user->setLocal(0);
-                
-                $user_exists = get_user_by_username($username);
-                $time_now = date("Y-m-d H:i:s");
-                
-                if (!empty($user_exists)) {
-                    $user->get_from_db($user_exists[0]);
-                    $user->setGivenname($givenname);
-                    $user->setTitle($title);
-                    $user->setStaffGroups($staff_groups);
-                    $user->setStudentGroups($student_groups);
-                    $user->setId($user_exists[0]);
-                    $user->setLastEditedOn($time_now);
-                    $user->update_in_db();
-                    $info = "User: id " . $user->getId() . " update in db";
-                    info($info);
-                } else {
-                    $user->setEmail($email);                
-                    $user->setCanVote(1);
-                    $user->setCanAsk(0);
-                    $user->setAdmin(0);
-                    $user->setGivenname($givenname);
-                    $user->setTitle($title);
-                    $user->setStaffGroups($staff_groups);
-                    $user->setStudentGroups($student_groups);
-                    $user->setLocalGroups(serialize(array()));
-                    $user->setIsActive(1);
-                    $user->setCreatedOn($time_now);
-                    $user->setLastEditedOn($time_now);
-                    
-//                    echo 'insert';
-//                    var_dump($_POST);
-//                    var_dump($user);
-//                    die();
-                    
-                    $user->store_in_db();
-                    $info = "User: $username added in db";
-                    info($info);
-                }
+                // set ldap bind variables
+                $ldaprdn = 'uid=survey,ou=People,dc=uni-sofia,dc=bg';
+                $ldappass = 'fee2noh7Sh';
 
-                ldap_close($ds);
+                // binding to ldap server
+                $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
+
+                // verify binding
+                if ($ldapbind) {
+
+                    // data array 
+                    $array = array("displayname", "mail", "title", "suscientifictitle", "suscientificdegree", "suFaculty", "suDepartment", "suStudentFaculty", "ou", "objectclass");
+                    //$array = array("displayname", "mail", "title");
+                    $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=$username)", $array, 0, 0, 0);
+
+                    $pass = md5($password);
+                    $email = "";
+                    $givenname = "";
+                    $title = "";
+                    $staff_groups = "";
+                    $student_groups = "";
+                    $staff_groups_id = array();
+                    $student_groups_id = array();
+                    $student_groups_array = array();
+                    $staff_groups_array = array();
+
+                    $info = ldap_get_entries($ds, $sr);
+
+                    for ($i = 0; $i < count($info); $i++) {
+                        if (isset($info[$i]['mail'])) {
+                            $email = $info[$i]['mail'][0];
+                        }
+                        if (isset($info[$i]['displayname'])) {
+                            $givenname = $info[$i]['displayname'][0];
+                        }
+                        if (isset($info[$i]['title'])) {
+                            $title .= $info[$i]['title'][0];
+                        }
+                        if (isset($info[$i]['suscientifictitle'])) {
+                            $title .= " " . $info[$i]['suscientifictitle'][0];
+                        }
+                        if (isset($info[$i]['suscientificdegree'])) {
+                            $title .= " " . $info[$i]['suscientificdegree'][0];
+                        }
+                        if (isset($info[$i]['objectclass'])) {
+                            if (in_array("suStudentPerson", $info[$i]['objectclass']) && !in_array("suFacultyPerson", $info[$i]['objectclass'])) {
+                                if (isset($info[$i]['sustudentfaculty'])) {
+                                    foreach ($info[$i]['sustudentfaculty'] as $student_group) {
+                                        if (!is_int($student_group)) {
+                                            array_push($student_groups_array, $student_group);
+                                        }
+                                    }
+                                } elseif (isset($info[$i]['sufaculty'])) {
+                                    foreach ($info[$i]['sufaculty'] as $student_group) {
+                                        if (!is_int($student_group)) {
+                                            array_push($student_groups_array, $student_group);
+                                        }
+                                    }
+                                }
+                            }
+                            if (in_array("suStaffPerson", $info[$i]['objectclass']) || in_array("suFacultyPerson", $info[$i]['objectclass'])) {
+                                if (isset($info[$i]['sufaculty'])) {
+                                    foreach ($info[$i]['sufaculty'] as $staff_group) {
+                                        if (!is_int($staff_group) && !in_array($staff_group, $student_groups_array)) {
+                                            array_push($staff_groups_array, $staff_group);
+                                        }
+                                    }
+                                }
+                                if (isset($info[$i]['sudepartment'])) {
+                                    foreach ($info[$i]['sudepartment'] as $staff_group) {
+                                        if (!is_int($staff_group)) {
+                                            array_push($staff_groups_array, $staff_group);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // get the ids of the staff groups
+                    foreach ($staff_groups_array as $staff_group_name) {
+                        $staff_group_ids = get_group_by_name($staff_group_name);
+                        if (!empty($staff_group_ids)) {
+                            foreach ($staff_group_ids as $group_id) {
+                                $group = new Group();
+                                $group->get_from_db($group_id);
+                                if ($group->getLocal() == "0" && $group->getStudent() == "0" && $group->getStaff() == "1") {
+                                    array_push($staff_groups_id, $group_id);
+                                }
+                            }
+                        }
+                    }
+
+                    // get the ids of the student groups
+                    foreach ($student_groups_array as $student_group_name) {
+                        $student_group_ids = get_group_by_name($student_group_name);
+                        if (!empty($student_group_ids)) {
+                            foreach ($student_group_ids as $group_id) {
+                                $group = new Group();
+                                $group->get_from_db($group_id);
+                                if ($group->getLocal() == "0" && $group->getStudent() == "1" && $group->getStaff() == "0") {
+                                    array_push($student_groups_id, $group_id);
+                                }
+                            }
+                        }
+                    }
+
+                    // set common properties
+                    $staff_groups = serialize($staff_groups_id);
+                    $student_groups = serialize($student_groups_id);
+                    $user = new User();
+
+                    $user->setUsername($username);
+                    $user->setPassword($pass);
+                    $user->setLocal(0);
+
+                    $user_exists = get_user_by_username($username);
+                    $time_now = date("Y-m-d H:i:s");
+
+                    if (!empty($user_exists)) {
+                        $user->get_from_db($user_exists[0]);
+                        $user->setGivenname($givenname);
+                        $user->setTitle($title);
+                        $user->setStaffGroups($staff_groups);
+                        $user->setStudentGroups($student_groups);
+                        $user->setId($user_exists[0]);
+                        $user->setLastEditedOn($time_now);
+                        $user->update_in_db();
+                        $info = "User: id " . $user->getId() . " update in db";
+                        info($info);
+                    } else {
+                        $user->setEmail($email);
+                        $user->setCanVote(1);
+                        $user->setCanAsk(0);
+                        $user->setAdmin(0);
+                        $user->setGivenname($givenname);
+                        $user->setTitle($title);
+                        $user->setStaffGroups($staff_groups);
+                        $user->setStudentGroups($student_groups);
+                        $user->setLocalGroups(serialize(array()));
+                        $user->setIsActive(1);
+                        $user->setCreatedOn($time_now);
+                        $user->setLastEditedOn($time_now);
+                        $user->store_in_db();
+                        $info = "User: $username added in db";
+                        info($info);
+                    }
+
+                    ldap_close($ds);
+                }
             }
-        }
         } catch (Exception $e) {
             $error = "User: $username failed login: $e";
             error($error);
@@ -1303,7 +1340,7 @@ function add_survey_group_type() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyAddGroupSubmit']) or !isset($_POST['formSurveyAddGroup'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyAddGroupSubmit']) or ! isset($_POST['formSurveyAddGroup'])) {
         if ($_POST['formSurveyAddGroup'] != 'formSurveyAddGroup') {
             logout();
             die();
@@ -1314,13 +1351,18 @@ function add_survey_group_type() {
         $cookie_key = 'msg';
         $cookie_value = 'Моля изберете тип на анкетната група преди да натиснете добави!';
         setcookie($cookie_key, $cookie_value, time() + 1);
-        header('Location: ' . ROOT_DIR . '?page=survey_question');
+        header('Location: ' . ROOT_DIR . '?page=survey_edit');
     }
 
-    if (isset($_SESSION['session_group'])) {
-        $session_group = unserialize($_SESSION['session_group']);
+    if (isset($_SESSION['session_groups'])) {
+        $session_groups = unserialize($_SESSION['session_groups']);
     } else {
-        $session_group = array('type' => '', 'student' => array(), 'staff' => array(), 'staff_departments' => array(), 'local' => array());
+        $session_groups = array(
+            'type' => '',
+            'student' => array(),
+            'staff' => array(),
+            'staff_departments' => array(),
+            'local' => array());
     }
 
     if (isset($_SESSION['survey_id'])) {
@@ -1328,19 +1370,26 @@ function add_survey_group_type() {
         $survey->get_from_db($_SESSION['survey_id']);
         $studentGroups = unserialize($survey->getStudentGroups());
         if (is_array($studentGroups)) {
-            $session_group['student'] = $studentGroups;
+            $session_groups['student'] = $studentGroups;
         }
     }
 
-    $session_group['type'] = $_POST['formSurveyAddGroupType'];
-    $session_group_str = serialize($session_group);
+    echo '<pre>';
+    var_dump($session_groups);
+    echo '</pre>';
 
-    $_SESSION['session_group'] = $session_group_str;
+    $session_groups['type'] = $_POST['formSurveyAddGroupType'];
+
+    echo '<pre>';
+    var_dump($session_groups);
+    echo '</pre>';
+
+    $_SESSION['session_groups'] = serialize($session_groups);
 
     $cookie_key = 'msg';
     $cookie_value = 'Вие избрахте тип на анкетната група.<br/>Моля изберете група(и) от дадените опции!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // get susi student groups
@@ -1374,30 +1423,28 @@ function add_survey_group_susi_student() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyAddGroupSusiStudentSubmit']) or !isset($_POST['formSurveyAddGroupSusiStudent'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyAddGroupSusiStudentSubmit']) or ! isset($_POST['formSurveyAddGroupSusiStudent'])) {
         if ($_POST['formSurveyAddGroupSusiStudent'] != 'formSurveyAddGroupSusiStudentGroup') {
             logout();
             die();
         }
     }
 
-    $session_group = unserialize($_SESSION['session_group']);
+    $session_groups = unserialize($_SESSION['session_groups']);
     if ($_POST['formSurveyAddGroupSusiStudentGroup'][0] == '0') {
-        $session_group['student'] = get_susi_student_groups();
+        $session_groups['student'] = get_susi_student_groups();
     } else {
-        $session_group['student'] = $_POST['formSurveyAddGroupSusiStudentGroup'];
+        $session_groups['student'] = $_POST['formSurveyAddGroupSusiStudentGroup'];
     }
 
-    $session_group['type'] = '';
+    $session_groups['type'] = '';
 
-    $session_group_str = serialize($session_group);
-
-    $_SESSION['session_group'] = $session_group_str;
+    $_SESSION['session_groups'] = serialize($session_groups);
 
     $cookie_key = 'msg';
     $cookie_value = 'Вие добавихте анкетната група студенти!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // get susi student groups
@@ -1456,30 +1503,28 @@ function add_survey_group_susi_staff_faculty() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyAddGroupSusiStaffFacultySubmit']) or !isset($_POST['formSurveyAddGroupSusiStaffFaculty'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyAddGroupSusiStaffFacultySubmit']) or ! isset($_POST['formSurveyAddGroupSusiStaffFaculty'])) {
         if ($_POST['formSurveyAddGroupSusiStaffFaculty'] != 'formSurveyAddGroupSusiStaffFaculty') {
             logout();
             die();
         }
     }
 
-    $session_group = unserialize($_SESSION['session_group']);
+    $session_groups = unserialize($_SESSION['session_groups']);
     if ($_POST['formSurveyAddGroupSusiStaffFacultyGroup'][0] == '0') {
-        $session_group['staff'] = get_susi_staff_faculties();
+        $session_groups['staff'] = get_susi_staff_faculties();
     } else {
-        $session_group['staff'] = $_POST['formSurveyAddGroupSusiStaffFacultyGroup'];
+        $session_groups['staff'] = $_POST['formSurveyAddGroupSusiStaffFacultyGroup'];
     }
 
-    $session_group['type'] = 'staff_departments';
+    $session_groups['type'] = 'staff_departments';
 
-    $session_group_str = serialize($session_group);
-
-    $_SESSION['session_group'] = $session_group_str;
+    $_SESSION['session_groups'] = serialize($session_groups);
 
     $cookie_key = 'msg';
-    $cookie_value = 'Вие добавихте анкетната група служители.<br/>Можете да изберете съответна пофгрупа!';
+    $cookie_value = 'Вие добавихте анкетната група служители.<br/>Можете да изберете съответна подгрупа!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // add survey group susi students
@@ -1488,31 +1533,29 @@ function add_survey_group_susi_staff_faculty_department() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyAddGroupSusiStaffFacultyDepartmentSubmit']) or !isset($_POST['formSurveyAddGroupSusiStaffFacultyDepartment'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyAddGroupSusiStaffFacultyDepartmentSubmit']) or ! isset($_POST['formSurveyAddGroupSusiStaffFacultyDepartment'])) {
         if ($_POST['formSurveyAddGroupSusiStaffFacultyDepartment'] != 'formSurveyAddGroupSusiStaffFacultyDepartment') {
             logout();
             die();
         }
     }
 
-    $session_group = unserialize($_SESSION['session_group']);
+    $session_groups = unserialize($_SESSION['session_groups']);
     if ($_POST['formSurveyAddGroupSusiStaffFacultyDepartmentGroup'][0] == '0') {
-        $session_group['staff_departments'] = array();
+        $session_groups['staff_departments'] = array();
     } else {
-        $session_group['staff_departments'] = $_POST['formSurveyAddGroupSusiStaffFacultyDepartmentGroup'];
+        $session_groups['staff_departments'] = $_POST['formSurveyAddGroupSusiStaffFacultyDepartmentGroup'];
     }
 
-    $session_group['type'] = '';
-    $session_group['staff'] = '';
+    $session_groups['type'] = '';
+    $session_groups['staff'] = '';
 
-    $session_group_str = serialize($session_group);
-
-    $_SESSION['session_group'] = $session_group_str;
+    $_SESSION['session_groups'] = serialize($session_groups);
 
     $cookie_key = 'msg';
     $cookie_value = 'Вие добавихте анкетната група служители!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // add local group
@@ -1521,30 +1564,28 @@ function add_survey_group_local() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyAddGroupLocalSubmit']) or !isset($_POST['formSurveyAddGroupLocal'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyAddGroupLocalSubmit']) or ! isset($_POST['formSurveyAddGroupLocal'])) {
         if ($_POST['formSurveyAddGroupLocal'] != 'formSurveyAddGroupLocal') {
             logout();
             die();
         }
     }
 
-    $session_group = unserialize($_SESSION['session_group']);
+    $session_groups = unserialize($_SESSION['session_groups']);
     if ($_POST['formSurveyAddGroupLocalGroup'][0] == '0') {
-        $session_group['local'] = get_local_groups_by_creator($user->getId());
+        $session_groups['local'] = get_local_groups_by_creator($user->getId());
     } else {
-        $session_group['local'] = $_POST['formSurveyAddGroupLocalGroup'];
+        $session_groups['local'] = $_POST['formSurveyAddGroupLocalGroup'];
     }
 
-    $session_group['type'] = '';
+    $session_groups['type'] = '';
 
-    $session_group_str = serialize($session_group);
-
-    $_SESSION['session_group'] = $session_group_str;
+    $_SESSION['session_groups'] = serialize($session_groups);
 
     $cookie_key = 'msg';
     $cookie_value = 'Вие добавихте анкетната група служители!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // delete group type
@@ -1553,16 +1594,178 @@ function delete_group_type() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_SESSION['session_group'])) {
+    if (!isset($user) or ! isset($_SESSION['session_groups'])) {
         logout();
         die();
     }
 
-    $session_group = unserialize($_SESSION['session_group']);
+    $session_group = unserialize($_SESSION['session_groups']);
     $session_group['type'] = '';
-    $_SESSION['session_group'] = serialize($session_group);
+    $_SESSION['session_groups'] = serialize($session_group);
 
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    $cookie_key = 'msg';
+    $cookie_value = 'Вие демаркирахте тип за група на анкетата!';
+    setcookie($cookie_key, $cookie_value, time() + 1);
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
+}
+
+// add survey element
+function add_survey_element() {
+    // get global db object
+    global $db;
+
+    // get global user object
+    global $user;
+
+    // get current time
+    $time_now = date("Y-m-d H:i:s");
+
+    // protect from unauthorized access
+    if ((!isset($user)) or ( !isset($_POST['formSurveyAddElementSubmit'])) or ( !isset($_POST['formSurveyAddAnswer'])) or ( !isset($_POST['formSurveyAddAnswerType']))) {
+        if ($_POST['formSurveyAddElementNew'] != 'formSurveyAddElementNew') {
+            logout();
+            die();
+        }
+    }
+
+    // get session answers
+    $session_answers = array();
+    $session_answers = get_session_answers();
+    if (empty($session_answers)) {
+        $cookie_key = 'msg';
+        $cookie_value = 'Моля, добавете поне един поделемент!';
+        setcookie($cookie_key, $cookie_value, time() + 1);
+        header('Location: ' . ROOT_DIR . '?page=survey_edit');
+        die();
+    }
+
+    // set question obj
+    $session_question = new Question();
+    $session_question = get_session_question();
+    $session_question->setTitle($_POST['formSurveyAddElementTitle']);
+    $session_question->setType($_POST['formSurveyAddElementType']);
+
+    $session_survey = new Survey();
+    $session_survey = get_session_survey();
+
+    if ($session_survey->getId() == 'null') {
+        $session_survey->store_in_db();
+        // get survey id
+        $sql = "SELECT id
+            FROM surveys
+            WHERE is_active = '1'
+            ORDER BY id DESC
+            LIMIT 1;";
+
+        $data = array();
+        foreach ($db->query($sql) as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        // set id to session survey
+        $survey_id = $data[0]['id'];
+        $session_survey->setId($survey_id);
+
+        $session_question->setSurvey($session_survey->getId());
+        $session_question->setIsActive(1);
+        $session_question->getCreatedOn($time_now);
+        $session_question->getLastEditedOn($time_now);
+        // store question in db
+        $session_question->store_in_db();
+
+        // get question id
+        $sql = "SELECT id
+            FROM questions
+            WHERE is_active = '1'
+            ORDER BY id DESC
+            LIMIT 1;";
+
+        $data = array();
+        foreach ($db->query($sql) as $key => $value) {
+            $data[$key] = $value;
+        }
+        // set id to session question
+        $question_id = $data[0]['id'];
+    } else {
+        $session_survey->setLastEditedOn($time_now);
+        $session_survey->update_in_db();
+        $session_question->setSurvey($session_survey->getId());
+        $session_question->setIsActive(1);
+        $session_question->getCreatedOn($time_now);
+        $session_question->getLastEditedOn($time_now);
+        // store question in db
+        $session_question->update_in_db();
+    }
+    if ($session_question->getId() != 'null') {
+        $question_id = $session_question->getId();
+    }
+
+    // unset session question to release memory
+    $question_empty = new Question();
+    $_SESSION['session_question'] = serialize($question_empty);
+
+    // store answers in db
+    foreach ($session_answers as $session_answer) {
+        $answer = new Answer();
+        $answer = $session_answer;
+        $answer->setSurvey($question_id);
+        $answer->setIsActive(1);
+        $answer->setCreatedOn($time_now);
+        $answer->setLastEditedOn($time_now);
+        $answer->store_in_db();
+    }
+    $session_answers = array();
+    $_SESSION['session_answers'] = serialize($session_answers);
+
+    $cookie_key = 'msg';
+    $cookie_value = 'Вие успешно добавихте/редактирахте елемент от анкетата!';
+    setcookie($cookie_key, $cookie_value, time() + 1);
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
+}
+
+// add survey element
+function edit_survey_element() {
+    // get global db object
+    global $db;
+
+    // get global user object
+    global $user;
+
+    // protect from unauthorized access
+    if (!isset($user) || (!isset($_POST['formElementEdit']))) {
+        logout();
+        die();
+    }
+
+    // get and set session answer
+    $session_question = new Question();
+    $session_question->get_from_db($_POST['formElementId']);
+
+    $survey = new Survey();
+    $survey->get_from_db($session_question->getSurvey());
+    if ($survey->getCreatedBy() != $user->getId()) {
+        if ($user->getAdmin() != 1) {
+            logout();
+            die();
+        }
+    }
+
+    $_SESSION['session_question'] = serialize($session_question);
+
+    // get session answers
+    $session_answers = array();
+    $session_answer_ids = get_survey_answers($session_question->getId());
+    foreach ($session_answer_ids as $answer_id) {
+        $answer = new Answer();
+        $answer->get_from_db($answer_id);
+        array_push($session_answers, $answer);
+    }
+    $_SESSION['session_answers'] = serialize($session_answers);
+
+    $cookie_key = 'msg';
+    $cookie_value = 'Вие избрахте елемент от анкетата за редакция!';
+    setcookie($cookie_key, $cookie_value, time() + 1);
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // add local group
@@ -1571,7 +1774,7 @@ function add_survey_answer() {
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyAddAnswerSubmit']) or !isset($_POST['formSurveyAddAnswer']) or !isset($_POST['formSurveyAddAnswerType'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyAddAnswerSubmit']) or ! isset($_POST['formSurveyAddAnswer']) or ! isset($_POST['formSurveyAddAnswerType'])) {
         if ($_POST['formSurveyAddAnswerNew'] != 'formSurveyAddAnswerNew') {
             logout();
             die();
@@ -1579,14 +1782,9 @@ function add_survey_answer() {
     }
 
     // set empty answer obj
-    $answer = new Answer;
-    if (isset($_SESSION['answers'])) {
-        $answers = unserialize($_SESSION['answers']);
-    } else {
-        // set empty new answers array of answers
-        $answers = array();
-    }
+    $session_answers = get_session_answers();
 
+    $answer = new Answer();
     $answer->setValue($_POST['formSurveyAddAnswer']);
     $answer->setDescription($_POST['formSurveyAddAnswerDescription']);
     $answer->setType($_POST['formSurveyAddAnswerType']);
@@ -1595,44 +1793,90 @@ function add_survey_answer() {
         $cookie_key = 'msg';
         $cookie_value = 'Моля, изберете тип на отговора за анкетната, за да го добавите!';
         setcookie($cookie_key, $cookie_value, time() + 1);
-        header('Location: ' . ROOT_DIR . '?page=survey_question');
+        header('Location: ' . ROOT_DIR . '?page=survey_add_answer');
         die();
     }
 
-    array_push($answers, $answer);
+    array_push($session_answers, $answer);
 
-    $answers_str = serialize($answers);
-
-    $_SESSION['answers'] = $answers_str;
+    $_SESSION['session_answers'] = serialize($session_answers);
 
     $cookie_key = 'msg';
-    $cookie_value = 'Вие добавихте отговор към анкетната!';
+    $cookie_value = 'Вие добавихте поделемент в анкетата!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_add_answer');
+}
+
+function delete_question() {
+    // get global user object
+    global $db;
+
+    // get global user object
+    global $user;
+
+    // protect from unauthorized access
+    if (!isset($user) || (!isset($_SESSION['session_survey']))) {
+        logout();
+        die();
+    }
+
+    $question = new Question();
+    $question->get_from_db($_GET['question_id']);
+    $survey = new Survey();
+    $survey->get_from_db($question->getSurvey());
+
+    if ($survey->getCreatedBy() != $user->getId()) {
+        if ($user->getAdmin() != 1) {
+            logout();
+            die();
+        }
+    }
+
+    $question->setIsActive(0);
+    $question->update_in_db();
+
+    $cookie_key = 'msg';
+    $cookie_value = 'Вие успешно изтрихте елемент от анкетата!';
+    setcookie($cookie_key, $cookie_value, time() + 1);
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
+    die();
 }
 
 // delete session answer
 function delete_session_answer($session_answer_id) {
     // get global user object
+    global $db;
+
+    // get global user object
     global $user;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_SESSION['answers'])) {
+    if (!isset($user) or ! isset($_SESSION['session_answers'])) {
         logout();
         die();
     }
 
+    $answer = new Answer();
+
     // get session answers
     $session_answers = get_session_answers();
     if (isset($session_answers[$session_answer_id])) {
+        $answer = $session_answers[$session_answer_id];
+        if ($answer->getId() != 'null') {
+            $answer_id = $answer->getId();
+            $sql = "UPDATE answers
+                SET is_active = '0'
+                WHERE is_active = '1' AND id = '$answer_id';";
+            $db->exec($sql);
+        }
         unset($session_answers[$session_answer_id]);
     }
-    $_SESSION['answers'] = serialize($session_answers);
+    $_SESSION['session_answers'] = serialize($session_answers);
 
     $cookie_key = 'msg';
-    $cookie_value = 'Вие успешно изтрихте отговор за анкетата!';
+    $cookie_value = 'Вие успешно изтрихте поделемент от анкетата!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // delete session groups
@@ -1640,8 +1884,10 @@ function delete_session_group() {
     // get global user object
     global $user;
 
+//    var_dump($_SESSION);
+//    die();
     // protect from unauthorized access
-    if (!isset($user) or !isset($_SESSION['session_group'])) {
+    if (!isset($user) or ! isset($_SESSION['session_groups'])) {
         logout();
         die();
     }
@@ -1663,17 +1909,18 @@ function delete_session_group() {
 
     $session_group_type = $query['session_group_type'];
     $session_group_id = $query['session_group_id'];
-    $session_group = unserialize($_SESSION['session_group']);
-    if (isset($session_group[$session_group_type][$session_group_id])) {
-        echo "$session_group_type $session_group_id";
-        unset($session_group[$session_group_type][$session_group_id]);
+    $session_groups = unserialize($_SESSION['session_groups']);
+
+    if (isset($session_groups[$session_group_type][$session_group_id])) {
+        unset($session_groups[$session_group_type][$session_group_id]);
     }
-    $_SESSION['session_group'] = serialize($session_group);
+
+    $_SESSION['session_groups'] = serialize($session_groups);
 
     $cookie_key = 'msg';
     $cookie_value = 'Вие успешно изтрихте група за анкетата!';
     setcookie($cookie_key, $cookie_value, time() + 1);
-    header('Location: ' . ROOT_DIR . '?page=survey_question');
+    header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
 
 // survey function
@@ -1685,7 +1932,7 @@ function survey_funct() {
     global $db;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyFunction'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyFunction'])) {
         logout();
         die();
     }
@@ -1751,8 +1998,8 @@ function survey_funct() {
 
         $groups = unserialize($_SESSION['session_group']);
         $studentGroups = serialize($groups['student']);
-        
-        if(is_array($groups['staff'])) {
+
+        if (is_array($groups['staff'])) {
             $staffGroups = serialize(array_merge($groups['staff'], $groups['staff_departments']));
         } else {
             $staffGroups = serialize($groups['staff_departments']);
@@ -1828,7 +2075,7 @@ function survey_funct() {
                 $session_answer->setSurvey($survey_id);
                 $session_answer->store_in_db();
             }
-            
+
             $cookie_key = 'msg';
             $cookie_value = 'Вие успешно създадохте анкета!';
             setcookie($cookie_key, $cookie_value, time() + 1);
@@ -1836,25 +2083,24 @@ function survey_funct() {
         }
         unset($_SESSION['session_group']);
     } elseif ($function == 'VoteDelete') {
-        if (!isset($_SESSION['session_user'])
-            || !isset($_SESSION['session_user'])) {
+        if (!isset($_SESSION['session_user']) || !isset($_SESSION['session_user'])) {
             logout();
             die();
         }
-        
+
         $survey_id = $_POST['formSurveyFunction'];
         $session_user = new User();
         $session_user = unserialize($_SESSION['session_user']);
         $user_id = $session_user->getId();
         $time_now = date("Y-m-d H:i:s");
-        
+
         $sql = "UPDATE votes
                 SET is_active = '0'
                     last_edited_ob = '$time_now'
                 WHERE   is_active = '1'
                         AND user_id = '$user_id'
                         AND survey_id = '$survey_id'";
-        
+
         try {
             $db->exec($sql);
             $info = "Delete vote in db for user:" . $session_user->getId() . " for survey: $survey_id";
@@ -1863,11 +2109,35 @@ function survey_funct() {
             $error = "Delete vote in db error:" . $e->getTraceAsString();
             error($error);
         }
-        
+
         $cookie_key = 'msg';
         $cookie_value = 'Вие успешно изтрихте вот на потребителя!';
         setcookie($cookie_key, $cookie_value, time() + 1);
         header('Location: ' . ROOT_DIR . '?page=survey_user');
+        die();
+    } elseif ($function == 'CreatorView') {
+        $survey_id = $_POST['formSurveyFunction'];
+
+        $_SESSION['surveyCreatorViewSurveyId'] = $survey_id;
+
+        var_dump($_SESSION);
+        header('Location: ' . ROOT_DIR . '?page=survey_edit');
+        die();
+    } elseif ($function == 'UserView') {
+        $survey_id = $_POST['formSurveyFunction'];
+
+        $_SESSION['surveyUserViewSurveyId'] = $survey_id;
+
+        var_dump($_SESSION);
+        header('Location: ' . ROOT_DIR . '?page=survey');
+        die();
+    } elseif ($function == 'UserVote') {
+        $survey_id = $_POST['formSurveyFunction'];
+
+        $_SESSION['surveyUserViewSurveyId'] = $survey_id;
+
+        var_dump($_SESSION);
+        header('Location: ' . ROOT_DIR . '?page=survey');
         die();
     }
     die();
@@ -1876,7 +2146,7 @@ function survey_funct() {
 // delete session group user
 function delete_session_group_user() {
     // protect from unauthorized access
-    if (!isset($_SESSION['user']) or !isset($_SESSION['group'])) {
+    if (!isset($_SESSION['user']) or ! isset($_SESSION['group'])) {
         logout();
         die();
     }
@@ -1919,7 +2189,7 @@ function group_funct() {
     global $db;
 
     // protect from unauthorized access
-    if (!isset($user) or !isset($_POST['formSurveyGroupFunction'])) {
+    if (!isset($user) or ! isset($_POST['formSurveyGroupFunction'])) {
         logout();
         die();
     }
@@ -1966,17 +2236,17 @@ function group_funct() {
         header('location: ' . ROOT_DIR . '?page=my_surveys');
     } elseif ($function == 'Create') {
         echo $function;
-      
+
         if (!isset($_SESSION['group'])) {
             $error = "Unauthorized try for group creating";
             error($error);
             logout();
         }
-        
+
         $groupName = filter_input(INPUT_POST, 'formSurveyGroupName');
         $groupDescription = filter_input(INPUT_POST, 'formSurveyGroupDescription');
         $groupAbbreviation = filter_input(INPUT_POST, 'formSurveyGroupAbbreviation');
-        
+
         $time_now = date("Y-m-d H:i:s");
         $session_group = unserialize($_SESSION['group']);
         $group = new Group();
@@ -1992,22 +2262,22 @@ function group_funct() {
         $group->setName($groupName);
         $group->setDescription($groupDescription);
         $group->setAbbreviation($groupAbbreviation);
-        
+
         $group_id = $group->store_in_db();
-        
-        if($group_id != NULL) {
+
+        if ($group_id != NULL) {
             $members = unserialize($group->getMembers());
             foreach ($members as $member_id) {
                 $member = new User();
                 $member->get_from_db($member_id);
                 $local_groups = unserialize($member->getLocalGroups());
-                
-                if(is_array($local_groups)) {
+
+                if (is_array($local_groups)) {
                     array_push($local_groups, $group_id);
                 } else {
                     $local_groups = array($group_id);
                 }
-                
+
                 $member->setLocalGroups(serialize($local_groups));
                 $member->update_in_db();
             }
@@ -2015,15 +2285,15 @@ function group_funct() {
             $cookie_key = 'msg';
             $cookie_value = 'Извиняваме се за неудобството, Вашата група нв беше създадена! Опитайте пак по-късно.';
             setcookie($cookie_key, $cookie_value, time() + 1);
-            header('location: '.ROOT_DIR.'?page=my_surveys');
+            header('location: ' . ROOT_DIR . '?page=my_surveys');
         }
-        
+
         var_dump($_SESSION);
         unset($_SESSION['group']);
         $cookie_key = 'msg';
         $cookie_value = 'Вашата група беше успешно създадена!';
         setcookie($cookie_key, $cookie_value, time() + 1);
-        header('location: '.ROOT_DIR.'?page=survey_group');
+        header('location: ' . ROOT_DIR . '?page=survey_group');
     }
     die();
 }
@@ -2034,7 +2304,7 @@ function add_session_group_user() {
     global $db;
 
     // protect from unauthorized access
-    if (!isset($_SESSION['user']) or !isset($_SESSION['group'])) {
+    if (!isset($_SESSION['user']) or ! isset($_SESSION['group'])) {
         logout();
         die();
     }
@@ -2104,7 +2374,7 @@ function user_funct() {
     global $db;
 
     // protect from unauthorized access
-    if (!isset($user) or ($user->getAdmin() != '1' or !isset($_SESSION['session_user']))) {
+    if (!isset($user) or ( $user->getAdmin() != '1' or ! isset($_SESSION['session_user']))) {
         logout();
         die();
     }
@@ -2221,14 +2491,14 @@ function delete_session_user_group() {
 
     // get url query
     $query = get_url_query();
-    
+
     // protect from unauthorized access
     if (!isset($user)
-        or ($user->getAdmin() != '1'
-            or !isset($_SESSION['session_user']))
-        or (!isset($query["page"])
-            and !isset($query["group_type"])
-            and !isset($query["group_id"]))) {
+            or ( $user->getAdmin() != '1'
+            or ! isset($_SESSION['session_user']))
+            or ( !isset($query["page"])
+            and ! isset($query["group_type"])
+            and ! isset($query["group_id"]))) {
         logout();
         die();
     }
@@ -2236,42 +2506,90 @@ function delete_session_user_group() {
     $session_user = new User();
     $session_user = unserialize($_SESSION['session_user']);
     $group_id = $query["group_id"];
-    
-    if($query["group_type"] == "staff") {
+
+    if ($query["group_type"] == "staff") {
         $user_staff_groups = array();
-        if(is_array(unserialize($session_user->getStaffGroups()))) {
+        if (is_array(unserialize($session_user->getStaffGroups()))) {
             $user_staff_groups = unserialize($session_user->getStaffGroups());
         }
-        if(($key = array_search($group_id, $user_staff_groups)) !== false) {
+        if (($key = array_search($group_id, $user_staff_groups)) !== false) {
             unset($user_staff_groups[$key]);
         }
         $session_user->setStaffGroups(serialize($user_staff_groups));
-    } elseif($query["group_type"] == "student") {
+    } elseif ($query["group_type"] == "student") {
         $user_student_groups = array();
-        if(is_array(unserialize($session_user->getStudentGroups()))) {
+        if (is_array(unserialize($session_user->getStudentGroups()))) {
             $user_student_groups = unserialize($session_user->getStudentGroups());
         }
-        if(($key = array_search($group_id, $user_student_groups)) !== false) {
+        if (($key = array_search($group_id, $user_student_groups)) !== false) {
             unset($user_student_groups[$key]);
         }
         $session_user->setStudentGroups(serialize($user_student_groups));
-    } elseif($query["group_type"] == "local") {
+    } elseif ($query["group_type"] == "local") {
         $user_local_groups = array();
-        if(is_array(unserialize($session_user->getLocalGroups()))) {
+        if (is_array(unserialize($session_user->getLocalGroups()))) {
             $user_local_groups = unserialize($session_user->getLocalGroups());
         }
-        if(($key = array_search($group_id, $user_local_groups)) !== false) {
+        if (($key = array_search($group_id, $user_local_groups)) !== false) {
             unset($user_local_groups[$key]);
         }
         $session_user->setLocalGroups(serialize($user_local_groups));
     }
-    
+
     $_SESSION['session_user'] = serialize($session_user);
     $cookie_key = 'msg';
     $cookie_value = 'Вие успешно премахнахте група от този потребител!';
     setcookie($cookie_key, $cookie_value, time() + 1);
     header('location: ' . ROOT_DIR . '?page=survey_user');
     die();
+}
+
+// question check if answered by user
+function get_user_answers_by_question($user_id, $question_id) {
+    // set connection var
+    global $db;
+
+    //  query to get all vote survey_ids for session user
+    $sql = "SELECT id
+            FROM votes
+            WHERE is_active = '1' AND user_id = '$user_id' AND question = '$question_id';";
+
+    $votes_data = array();
+    $votes = array();
+    foreach ($db->query($sql) as $key => $value) {
+        $votes_data[$key] = $value;
+        foreach ($votes_data[$key] as $subkey => $subvalue) {
+            if (is_int($subkey)) {
+                $votes[] = $subvalue;
+            }
+        }
+    }
+
+    return $votes;
+}
+
+// get answer by user and question
+function get_user_vote_by_answer($user_id, $answer_id) {
+    // set connection var
+    global $db;
+
+    //  query to get all vote survey_ids for session user
+    $sql = "SELECT id
+            FROM votes
+            WHERE is_active = '1' AND user_id = '$user_id' AND answer_id = '$answer_id';";
+
+    $votes_data = array();
+    $votes = array();
+    foreach ($db->query($sql) as $key => $value) {
+        $votes_data[$key] = $value;
+        foreach ($votes_data[$key] as $subkey => $subvalue) {
+            if (is_int($subkey)) {
+                $votes[] = $subvalue;
+            }
+        }
+    }
+
+    return $votes;
 }
 
 ?>

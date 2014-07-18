@@ -6,7 +6,7 @@ class Survey extends BaseObject {
     private $created_by;
     private $available_from;
     private $available_due;
-    private $question;
+    private $title;
     private $staffGroups;
     private $studentGroups;
     private $localGroups;
@@ -32,10 +32,10 @@ class Survey extends BaseObject {
             $this->setIsActive($survey_data[0]['is_active']);
             $this->setCreatedOn($survey_data[0]['created_on']);
             $this->setLastEditedOn($survey_data[0]['last_edited_on']);
-            $this->setCreatedBy($survey_data[0]['id']);
+            $this->setCreatedBy($survey_data[0]['created_by']);
             $this->setAvailableFrom($survey_data[0]['available_from']);
             $this->setAvailableDue($survey_data[0]['available_due']);
-            $this->setQuestion($survey_data[0]['question']);
+            $this->setTitle($survey_data[0]['title']);
             $this->setStaffGroups($survey_data[0]['staff_groups']);
             $this->setStudentGroups($survey_data[0]['student_groups']);
             $this->setLocalGroups($survey_data[0]['local_groups']);
@@ -53,7 +53,7 @@ class Survey extends BaseObject {
         // sql statement
         $sql = "INSERT INTO surveys
                 (is_active, created_on, last_edited_on, created_by,
-                available_from, available_due, question,
+                available_from, available_due, title,
                 staff_groups, student_groups, local_groups, status)
                 VALUES ('".$this->getIsActive()."',
                         '".$this->getCreatedOn()."',
@@ -61,7 +61,7 @@ class Survey extends BaseObject {
                         '".$this->getCreatedBy()."',
                         '".$this->getAvailableFrom()."',
                         '".$this->getAvailableDue()."',
-                        '".$this->getQuestion()."',
+                        '".$this->getTitle()."',
                         '".$this->getStaffGroups()."',
                         '".$this->getStudentGroups()."',
                         '".$this->getLocalGroups()."',
@@ -70,7 +70,7 @@ class Survey extends BaseObject {
         try { 
             $db->exec($sql);
             $survey_id = $db->lastInsertId();
-            $info = "Group: " . $survey_id . " created";
+            $info = "Survey: " . $survey_id . " created";
             info($info);
         } catch(PDOExecption $e) {
             $error = "Fail store survey in db: $e";
@@ -91,7 +91,7 @@ class Survey extends BaseObject {
                     last_edited_on = '".$this->getLastEditedOn()."',
                     available_from = '".$this->getAvailableFrom()."',
                     available_due = '".$this->getAvailableDue()."',
-                    question = '".$this->getQuestion()."',
+                    title = '".$this->getTitle()."',
                     status = '".$this->getStatus()."',
                     staff_groups = '".$this->getStaffGroups()."',
                     student_groups = '".$this->getStudentGroups()."',
@@ -128,13 +128,13 @@ class Survey extends BaseObject {
         return $this->available_due;
     }
 
-    public function setQuestion($question) {
-        $this->question = $question;
+    public function setTitle($title) {
+        $this->title = $title;
         return $this;
     }
 
-    public function getQuestion() {
-        return $this->question;
+    public function getTitle() {
+        return $this->title;
     }
 
     public function setGroups($groups) {
@@ -143,7 +143,7 @@ class Survey extends BaseObject {
     }
 
     public function getGroups() {
-        return $this->qroups;
+        return $this->groups;
     }
 
     public function setStatus($status) {

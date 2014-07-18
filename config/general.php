@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/Sofia');
+
 // include the base class
 require_once ROOT_DIR . 'class/Config.php';
 require_once ROOT_DIR . 'class/BaseObject.php';
@@ -9,6 +11,7 @@ require_once ROOT_DIR . 'class/Survey.php';
 require_once ROOT_DIR . 'class/User.php';
 require_once ROOT_DIR . 'class/Vote.php';
 require_once ROOT_DIR . 'class/Message.php';
+require_once ROOT_DIR . 'class/Question.php';
 
 // create new config
 $config = new Config();

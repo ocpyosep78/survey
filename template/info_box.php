@@ -24,9 +24,9 @@ switch ($page) {
             <h4>
                 <?php echo INFO_BOX_SURVEY_ATTENTION; ?>
                 <br/>
-                <?php echo INFO_BOX_SURVEY_FILL_SURVEY; ?>
+                <?php echo INFO_BOX_SURVEY_FILL_QUESTION; ?>
                 <br/>
-                <?php echo INFO_BOX_SURVEY_VIEW_SURVEY_RESULTS; ?>
+                <?php echo INFO_BOX_SURVEY_FILLED_QUESTIONS; ?>
             </h4>
         </div>
         <?php
@@ -95,6 +95,30 @@ switch ($page) {
                     </li>
                 </ul>
             </h4>
+        </div>
+        <?php
+        break;
+    case 'survey_edit':
+        ?>
+        <div class="ac info_box box_orange">
+            <h4>
+                <?php echo INFO_BOX_SURVEY_QUESTION_HERE_YOU_CAN; ?>
+                <ul class="no-float al">
+                    <li>
+                        <?php echo INFO_BOX_SURVEY_QUESTION_TO_MAKE_SURVEY; ?>
+                    </li>
+                    <li>
+                        <?php echo INFO_BOX_SURVEY_QUESTION_TO_EDIT_SURVEY; ?>
+                    </li>
+                </ul>
+            </h4>
+        </div>
+        <?php
+        break;
+    case 'user_survey':
+        ?>
+        <div class="ac info_box box_orange">
+            <?php echo SURVEY_ROLE_PAGE_CAN_VOTE_INFO; ?>
         </div>
         <?php
         break;

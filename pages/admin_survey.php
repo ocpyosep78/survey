@@ -29,7 +29,7 @@ if (isset($_SESSION['group_users'])) {
 <div class="ac">
     <div class="ac">
         <div class="action no-margin ac ui-widget">
-            <a class="button button-blue" style="color: #fff; width: 230px; margin: 2px 5px 0px 10px;" href="<?php print_r(ROOT_DIR . '?page=survey_question'); ?>"><?php echo MY_SURVEYS_PAGE_CREATE_SURVEY ?></a>
+            <a class="button button-blue" style="color: #fff; width: 230px; margin: 2px 5px 0px 10px;" href="<?php print_r(ROOT_DIR . '?page=survey_edit'); ?>"><?php echo MY_SURVEYS_PAGE_CREATE_SURVEY ?></a>
         </div>
         <br/>
     </div>
@@ -42,7 +42,6 @@ if (isset($_SESSION['group_users'])) {
             foreach ($surveys_by_creator as $survey_id) {
                 $survey = new Survey();
                 $survey->get_from_db($survey_id);
-//                var_dump($survey);
                 ?>
                 <h3 class="no-float ac"><?php print_r($survey->getTitle()); ?></h3>
                 <div>
@@ -50,7 +49,7 @@ if (isset($_SESSION['group_users'])) {
                         <div class="action no-margin ac">
                             <form id="formSurvey<?php print_r($survey->getId()); ?>"
                                   class="form ac prefix_2" 
-                                  action="./?page=my_surveys&amp;funct=survey_funct" 
+                                  action="./?page=admin_surveys&amp;funct=survey_funct" 
                                   method="POST">
                                 <input id="formSurveyView" 
                                        class="button button-green" 
@@ -105,7 +104,7 @@ if (isset($_SESSION['group_users'])) {
                         <div class="ac">
                             <section class="clearfix prefix_2">
                                 <label for="formGroup<?php print_r($group->getId()); ?>Description"><?php echo MY_SURVEYS_PAGE_GROUP_INFO_LABEL; ?>
-                                    <small>Информация за групата</small>
+                                    <small><?php echo MY_SURVEYS_PAGE_GROUP_INFO; ?></small>
                                 </label>
                                 <textarea id="formGroup<?php print_r($group->getId()); ?>Description" class="al" rows="5" disabled="disabled" style="resize: vertical;"><?php print_r($group->getDescription()); ?></textarea>
                             </section>

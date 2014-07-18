@@ -5,7 +5,7 @@
         if (isset($user)) {
             echo '<br />';
             echo $user->getTitle() . '&nbsp;';
-            echo $user->getGivenname();
+            echo $user->getGivenname() . "<br/>";
             $user_id = $user->getId();
             $user_staff_groups = get_user_staff_groups($user_id);
             if (!empty($user_staff_groups)) {

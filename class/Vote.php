@@ -5,6 +5,7 @@ class Vote extends BaseObject {
 
     private $user;
     private $survey;
+    private $question;
     private $answer;
     private $value;
 
@@ -31,6 +32,7 @@ class Vote extends BaseObject {
             $this->setUser($vote_data[0]['user_id']);
             $this->setAnswer($vote_data[0]['answer_id']);
             $this->setSurvey($vote_data[0]['survey_id']);
+            $this->setQuestion($vote_data[0]['question']);
             $this->setValue($vote_data[0]['answer_value']);
         } else {
             unset($this);
@@ -47,23 +49,25 @@ class Vote extends BaseObject {
         $lastEditedOn = parent::getLastEditedOn();
         $user = $this::getUser();
         $survey = $this::getSurvey();
+        $question = $this::getQuestion();
         $answer = $this::getAnswer();
         $value = $this::getValue();
 
         // sql statement
         $sql = "INSERT INTO votes
                 (is_active, created_on, last_edited_on, user_id,
-                survey_id, answer_id, answer_value)
+                survey_id, question, answer_id, answer_value)
                 VALUES ('$isActive',
                         '$createdOn',
                         '$lastEditedOn',
                         '$user',
                         '$survey',
+                        '$question',
                         '$answer',
                         '$value');";
         
         $db->exec($sql);
-        $info = "User: '$user' vote on survey '$survey', answer '$answer', value '$value'";
+        $info = "User: '$user' vote on survey '$survey', question '$question', answer '$answer', value '$value'";
         info($info);
     }
         
@@ -78,6 +82,7 @@ class Vote extends BaseObject {
                     last_edited_on = '".$this->getLastEditedOn()."',
                     user_id = '".$this->getUser()."',
                     survey_id = '".$this->getSurvey()."',
+                    question = '".$this->getQuestion()."',
                     answer_id = '".$this->getAnswer()."',
                     answer_value = '".$this->getValue()."'
                 WHERE id = '".$this->getId()."';";
@@ -103,6 +108,15 @@ class Vote extends BaseObject {
         return $this->survey;
     }
 
+    public function setQuestion($question) {
+        $this->question = $question;
+        return $this;
+    }
+
+    public function getQuestion() {
+        return $this->question;
+    }
+    
     public function setAnswer($answer) {
         $this->answer = $answer;
         return $this;

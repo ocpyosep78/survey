@@ -15,7 +15,9 @@ define('HELLO_BOX_PLEASE_IDENTIFY', 'Моля, идентифицирайте с
 define('INFO_BOX_SURVEY_ROLE', 'Тук можете да изберете функционалност на "СУ Анкета".');
 define('INFO_BOX_SURVEY_ATTENTION', 'Внимание!!!');
 define('INFO_BOX_SURVEY_FILL_SURVEY', 'Можете да попълните всяка от анкетите само веднъж.');
+define('INFO_BOX_SURVEY_FILL_QUESTION', 'Можете да отговорите на всеки въпрос от анкетата само веднъж.');
 define('INFO_BOX_SURVEY_VIEW_SURVEY_RESULTS', 'Наличните попълнени от Вас анкети са видими най-долу.');
+define('INFO_BOX_SURVEY_FILLED_QUESTIONS', 'Отговорените от Вас въпроси са неактивни.');
 define('INFO_BOX_MY_SURVEYS_HERE_YOU_CAN', 'Тук можете да:');
 define('INFO_BOX_MY_SURVEYS_TO_VIEW_SURVEY_STATISTICS', 'прегледате статистика от Ваша анкета');
 define('INFO_BOX_SURVEY_ADMIN', 'Тук можете да прегледате потребителите на приложението.');
@@ -272,9 +274,56 @@ define('BTN_PRINT', 'Разпечатай');
 define('BTN_EDIT', 'Редактирай');
 define('BTN_DELETE', 'Изтрий');
 define('BTN_ENTER', 'Вход');
+define('BTN_SURVEY_VIEW', 'Преглед анкета');
+define('BTN_ADD', 'Добави');
 
 define('REQUIRED_FIELDS', 'Полетата със <b style="color: red; font-style: normal;">*</b> са задължителни.');
 
+// edit survey page
+define('EDIT_SURVEY_PAGE_SURVEY_ELEMENTS', 'ЕЛЕМЕНТИ ОТ АНКЕТАТА:');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_TYPE', 'Вие избрахте тип на анкетната група.<br/>Моля изберете група(и) от дадените опции!');
+
+// edit survey page section add student group
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STUDENTS', 'Изберете група студенти');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STUDENTS_FACULTIES', 'Факултети');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STUDENTS_CHOICE_FACULTIES', 'Изберете факултет за групата студенти<br />По подразбиране е избран университетът, т.е. всички факултети');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STUDENTS_DEFAULT_OPTION', 'СУ "Св. Климент Охридски"');
+
+// edit survey page section add staff group
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STAFF', 'Изберете група служители от факултетите в СУ');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STAFF_FACULTIES', 'Факултети');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STAFF_CHOICE_FACULTIES', 'Изберете факултет за групата студенти<br />По подразбиране е избран университетът, т.е. всички факултети');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_STAFF_DEFAULT_OPTION', 'СУ "Св. Климент Охридски"');
+
+// edit survey page section add staff sub-group
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_SUB_GROUP_STAFF', 'Изберете подгрупа служители от отделите и звената в СУ');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_SUB_GROUP_STAFF_FACULTIES', 'Отдели');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_SUB_GROUP_STAFF_CHOICE_FACULTIES', 'Изберете отдел/и за групата служители<br />По подразбиране са избрани целите факултети и звена');
+
+// edit survey page section add local group
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_LOCAL', 'Изберете Ваша локална група');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_LOCAL_GROUPS', 'Локални групи');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_LOCAL_LOCAL_GROUPS', 'Изберете локална група създадена от Вас');
+define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_LOCAL_DEFAULT_OPTION', 'Всички');
+
+// edit survey page section add question
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_TITLE', 'Добавете елемент към анкетата');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TITLE', 'Заглавие на елемента');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TITLE_INFO', 'Въведете заглавие на елемента');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_INFO', 'Описание на елемента');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_INFO_INFO', 'Въведете пояснителна информация за елемента');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE', 'Тип на елемента');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_QUESTION_TITLE', 'Въпрос');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_TEXTBOX_TITLE', 'Текстово поле');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_QUESTION_INFO', 'Изберете, ако желаете да добавите въпрос.');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_TEXTBOX_INFO', 'Изберете, ако желаете да добавите текстoво поле<br /><em>Внимание! </em>Отговори към текстови полета няма да бъдат запаметени');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TITLE', 'Поделементи:');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_ADD_SUBELEMENT_TITLE', 'Добавете поделемент към елемент от анкетата');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_DELETE_TEXTBOX', 'Изтрийте текстово поле');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TEXTBOX_TITLE', 'Съдържание на текстово поле');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_AFTER', 'След като добавите желаните от Вас отговори затворете текущия раздела в browser-а и презаредете страницата (F5).');
+
+define('SURVEY_PAGE_SURVEY_TITLE', 'ЗАГЛАВИЕ НА АНКЕТАТА:');
 define('SURVEY_PAGE_AVAILABLE_SURVEYS', 'Налични анкети');
 define('SURVEY_PAGE_VOTES', 'Гласoвe:');
 define('SURVEY_PAGE_ANSWERS', 'Отговори:');
@@ -282,6 +331,10 @@ define('SURVEY_PAGE_VOTERS', 'Анкетирани:');
 define('SURVEY_PAGE_DIAGRAM', 'Диаграма:');
 define('SURVEY_PAGE_FILLED_SURVEYS', 'Попълнени анкети');
 
+// user survey homepage
+define('USER_SURVEY_HOMEPAGE_AVAILABLE_SURVEYS', 'Налични анкети');
+
+// admin survey homepage
 define('MY_SURVEYS_PAGE_MY_SURVEYS', 'Моите анкети');
 define('MY_SURVEYS_PAGE_CREATE_SURVEY', 'Създай нова анкета');
 define('MY_SURVEYS_PAGE_STATUS_SURVEY', 'Статус на анкетата');
@@ -344,17 +397,19 @@ define('SURVEY_QUESTION_PAGE_ADD_GROUP_STAFF_INFO', 'Изберете група
 define('SURVEY_QUESTION_PAGE_ADD_GROUP_LOCAL_NAME', 'Ваша локална група');
 define('SURVEY_QUESTION_PAGE_ADD_GROUP_LOCAL_INFO', 'Изберете Ваша създадена група');
 define('SURVEY_QUESTION_PSURVEY_QUESTION_PAGE_ADD_ANSWER_DESCRIPTION_INFOAGE_ADD_ANSWER_TITLE', 'Добавете отговор');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_NAME', 'Отговор');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_INFO', 'Въведете отговор на запитването');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_NAME', 'Етикет');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_INFO', 'Въведете текст за етикет на поделемента от анкетата');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_DESCRIPTION', 'Описание');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_DESCRIPTION_INFO', 'Въведете отговор на запитването');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TITLE', 'Добавете отговор към анкетата');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE', 'Тип отговор');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_INFO', 'Изберете тип за отговора на запитването');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_NULL', 'Изберете тип на отговора');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_DESCRIPTION_INFO', 'Въведете описание на поделемента от анкетата');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TITLE', 'Добавете отговор към въпроса');
+define('SURVEY_EDIT_PAGE_ADD_QUESTION', 'Добавете отговор към анкетата');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE', 'Тип поделемент');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_INFO', 'Изберете тип за поделемента на анкетата');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_NULL', 'Изберете тип на поделемента');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXT', 'Свободен текст');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_CHECKBOX', 'Чек бутон');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_RADIO', 'Радио бутон');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXTBOX', 'Текстово поле');
 
 define('SURVEY_ROLE_PAGE_ADMIN_TITLE', 'Администратор на "СУ Анкета"');
 define('SURVEY_ROLE_PAGE_ADMIN_INFO', '
@@ -387,18 +442,15 @@ define('SURVEY_ROLE_PAGE_CAN_ASK_INFO', '
                 </ul>');
 define('SURVEY_ROLE_PAGE_CAN_VOTE_TITLE', 'Потребител');
 define('SURVEY_ROLE_PAGE_CAN_VOTE_INFO', '
-                <h4 class="no-float al">
-                    Като създател на анкети Вие можете да:
+                <h4 class="no-float ac">
+                    Като потребител на "СУ Анкета" Вие можете да:
                 </h4>
                 <ul class="no-float al">
                     <li>
-                        Създавате анкети
+                        Преглеждате списък от налични анкети
                     </li>
                     <li>
-                        Променяте всяка създадена от Вас анкета
-                    </li>
-                    <li>
-                        Проверявате статистиката за всяка създадена от Вас анкета
+                        Попълвате налични анкети
                     </li>
                 </ul>');
 define('SURVEY_ROLE_PAGE_CONTACT_TITLE', 'Контактна форма');
