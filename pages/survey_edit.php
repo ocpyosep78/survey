@@ -11,9 +11,9 @@ $session_question = get_session_question();
 $session_groups = get_session_groups();
 $session_answers = get_session_answers();
 
-echo '<pre>';
-var_dump($session_answers);
-echo '</pre>';
+//echo '<pre>';
+//var_dump($session_answers);
+//echo '</pre>';
 ?>
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-ui.js"></script>
