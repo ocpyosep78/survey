@@ -12,6 +12,17 @@
         logout();
         die();
     }
+    var_dump($survey->getId());
+    if ($survey->getId()) {
+        ?>
+        <div class="ac info_box" style="background-size: cover;">
+            <img src="<?php echo ROOT_DIR . 'images/projectLogo.png'; ?>" style="width: 100%;" />
+        </div>
+        <div class="ac info_box" style="background-size: cover; background-color: #e3c0a0;">
+            <img src="<?php echo ROOT_DIR . 'images/studentsLogo.png'; ?>" style="width: 100%;" />
+        </div>
+        <?php
+    }
     ?>
     <div class="ac info_box box_green">
         <h3>
@@ -97,7 +108,7 @@
                                                    value="<?php
                                                    if (($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
                                                        print_r($answer_id);
-                                                   } elseif(($answer->getType() == "text") && ($has_answered == TRUE)) {
+                                                   } elseif (($answer->getType() == "text") && ($has_answered == TRUE)) {
                                                        print_r($vote->getValue());
                                                    }
                                                    ?>"
