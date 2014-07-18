@@ -1,7 +1,7 @@
 <div class="ac info_box box_blue">
     <h4>
-        Здравейте,
         <?php
+        echo HELLO_BOX_HELLO;
         if (isset($user)) {
             echo '<br />';
             echo $user->getTitle() . '&nbsp;';
@@ -9,7 +9,7 @@
             $user_id = $user->getId();
             $user_staff_groups = get_user_staff_groups($user_id);
             if (!empty($user_staff_groups)) {
-                echo "<br/><b>" . STAFF_PERSON . ":</b><br/>";
+                echo "<b>" . STAFF_PERSON . ":</b><br/>";
                 foreach ($user_staff_groups as $group_id) {
                     $group = new Group();
                     $group->get_from_db($group_id);

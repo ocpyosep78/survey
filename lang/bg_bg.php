@@ -12,6 +12,7 @@ define('STUDENT_PERSON', 'студент');
 define('MEMBER_PERSON', 'член на');
 define('HELLO_BOX_SIDE_DESCRIPTION', 'Това е платформа за провеждане на online анкети в СУ "Св. Климент Охридски".');
 define('HELLO_BOX_PLEASE_IDENTIFY', 'Моля, идентифицирайте се с потребителско име и парола от СУСИ!');
+define('HELLO_BOX_HELLO', 'Здравейте,');
 define('INFO_BOX_SURVEY_ROLE', 'Тук можете да изберете функционалност на "СУ Анкета".');
 define('INFO_BOX_SURVEY_ATTENTION', 'Внимание!!!');
 define('INFO_BOX_SURVEY_FILL_SURVEY', 'Можете да попълните всяка от анкетите само веднъж.');
