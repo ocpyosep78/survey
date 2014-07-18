@@ -12,7 +12,6 @@
         logout();
         die();
     }
-    var_dump($survey->getId());
     if ($survey->getId()) {
         ?>
         <div class="ac info_box" style="background-size: cover;">
