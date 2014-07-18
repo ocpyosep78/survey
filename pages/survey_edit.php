@@ -11,6 +11,9 @@ $session_question = get_session_question();
 $session_groups = get_session_groups();
 $session_answers = get_session_answers();
 
+echo '<pre>';
+var_dump($session_answers);
+echo '</pre>';
 ?>
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-ui.js"></script>
@@ -444,7 +447,7 @@ $session_answers = get_session_answers();
             <br/><br/><br/>
         </div>
         <h3 class="no-float ac" id="survey_add_answer">
-            <?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_TITLE; ?>
+            <?php echo EDIT_SURVEY_PAGE_ADD_EDIT_ELEMENT_TITLE; ?>
         </h3>
         <div class="ac">
             <section>
@@ -596,6 +599,30 @@ $session_answers = get_session_answers();
         </h3>
     </div>
     <?php
+    if ($session_survey->getId() == "103") {
+        ?>
+        <style type="text/css">
+            #logoStudentCouncil {
+                background-size: cover;
+                background: #e2cdb7; /* Old browsers */
+                background: -moz-linear-gradient(left,  #e2cdb7 0%, #e0bfa0 50%, #e3b896 85%, #e3ac85 88%, #de9572 95%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e2cdb7), color-stop(50%,#e0bfa0), color-stop(85%,#e3b896), color-stop(88%,#e3ac85), color-stop(95%,#de9572)); /* Chrome,Safari4+ */
+                background: -webkit-linear-gradient(left,  #e2cdb7 0%,#e0bfa0 50%,#e3b896 85%,#e3ac85 88%,#de9572 95%); /* Chrome10+,Safari5.1+ */
+                background: -o-linear-gradient(left,  #e2cdb7 0%,#e0bfa0 50%,#e3b896 85%,#e3ac85 88%,#de9572 95%); /* Opera 11.10+ */
+                background: -ms-linear-gradient(left,  #e2cdb7 0%,#e0bfa0 50%,#e3b896 85%,#e3ac85 88%,#de9572 95%); /* IE10+ */
+                background: linear-gradient(to right,  #e2cdb7 0%,#e0bfa0 50%,#e3b896 85%,#e3ac85 88%,#de9572 95%); /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2cdb7', endColorstr='#de9572',GradientType=1 ); /* IE6-9 */
+            }
+        </style>
+        <div id="logoProject" class="ac info_box">
+            <img src="<?php echo ROOT_DIR . 'images/projectLogo.png'; ?>" style="width: 100%;" />
+        </div>
+        <div id="logoStudentCouncil" class="ac info_box">
+            <img src="<?php echo ROOT_DIR . 'images/studentsLogo.png'; ?>" style="width: 100%;" />
+        </div>
+        <?php
+    }
+
     $survey_questions = get_survey_questions($session_survey->getId());
     if (!empty($survey_questions)) {
         ?>
@@ -653,17 +680,15 @@ $session_answers = get_session_answers();
                     ?>
                     <h3 class="no-float ac"><?php print_r($question->getTitle()); ?></h3>
                     <div>
-                        <?php
-                        $answers = get_survey_answers($question->getId());
-                        if (!empty($answers)) {
-                            ?>
-                            <form id="formSurvey<?php print_r($question->getId()); ?>" 
-                                  class="form ac" 
-                                  action="<?php echo ROOT_DIR . '?page=survey_edit&amp;funct=edit_survey_element' ?>" 
-                                  method="POST">
-                                <div class="ac">
-                                    <section class="clearfix prefix_2">
-                                        <?php
+                        <form id="formSurvey<?php print_r($question->getId()); ?>" 
+                              class="form ac" 
+                              action="<?php echo ROOT_DIR . '?page=survey_edit&amp;funct=edit_survey_element' ?>" 
+                              method="POST">
+                            <div class="ac">
+                                <section class="clearfix prefix_2">
+                                    <?php
+                                    $answers = get_survey_answers($question->getId());
+                                    if (!empty($answers)) {
                                         foreach ($answers as $answer_id) {
                                             $answer = new Answer();
                                             $answer->get_from_db($answer_id);
@@ -697,29 +722,27 @@ $session_answers = get_session_answers();
                                                 <?php
                                             }
                                         }
-                                        ?>
-                                    </section>
-                                </div>
-                                <br/>
-                                <div class="action no-margin ac prefix_1">
-                                    <input id="formQuestion<?php print_r($question->getId()); ?>Submit"
-                                           class="button button-orange"
-                                           name="formSurveyEdit"
-                                           type="submit"
-                                           value="<?php echo BTN_EDIT; ?>"
-                                           style="margin-left: 30px;" />
-                                    <input type="hidden"
-                                           name="formElementId"
-                                           value="<?php print_r($question->getId()); ?>">
-                                    <a class="button button-red fl" 
-                                       style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 
-                                       href="<?php print_r(ROOT_DIR . '?page=survey_edit&amp;funct=delete_question&amp;question_id=' . $question->getId()); ?>"><?php echo BTN_DELETE; ?></a>
-                                </div>
-                            </form>
-                            <br/><br/>
-                            <?php
-                        }
-                        ?>
+                                    }
+                                    ?>
+                                </section>
+                            </div>
+                            <br/>
+                            <div class="action no-margin ac prefix_1">
+                                <input id="formQuestion<?php print_r($question->getId()); ?>Submit"
+                                       class="button button-orange"
+                                       name="formElementEdit"
+                                       type="submit"
+                                       value="<?php echo BTN_EDIT; ?>"
+                                       style="margin-left: 30px;" />
+                                <input type="hidden"
+                                       name="formElementId"
+                                       value="<?php print_r($question->getId()); ?>">
+                                <a class="button button-red fl" 
+                                   style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 
+                                   href="<?php print_r(ROOT_DIR . '?page=survey_edit&amp;funct=delete_question&amp;question_id=' . $question->getId()); ?>"><?php echo BTN_DELETE; ?></a>
+                            </div>
+                        </form>
+                        <br/><br/>
                     </div>
                     <?php
                 }

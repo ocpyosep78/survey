@@ -12,7 +12,7 @@
         logout();
         die();
     }
-    if ($survey->getId()) {
+    if ($survey->getId() == "103") {
         ?>
         <div class="ac info_box" style="background-size: cover;">
             <img src="<?php echo ROOT_DIR . 'images/projectLogo.png'; ?>" style="width: 100%;" />

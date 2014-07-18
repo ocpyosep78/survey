@@ -309,6 +309,7 @@ define('EDIT_SURVEY_PAGE_YOU_CHOOSE_GROUP_LOCAL_DEFAULT_OPTION', 'Всички')
 
 // edit survey page section add question
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_TITLE', 'Добавете елемент към анкетата');
+define('EDIT_SURVEY_PAGE_ADD_EDIT_ELEMENT_TITLE', 'Добавете или редактирайте елемент към анкетата');
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TITLE', 'Заглавие на елемента');
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TITLE_INFO', 'Въведете заглавие на елемента');
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_INFO', 'Описание на елемента');
@@ -323,6 +324,11 @@ define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_ADD_SUBELEMENT_TITLE', 'Доб�
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_DELETE_TEXTBOX', 'Изтрийте текстово поле');
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TEXTBOX_TITLE', 'Съдържание на текстово поле');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_AFTER', 'След като добавите желаните от Вас отговори затворете текущия раздела в browser-а и презаредете страницата (F5).');
+
+define('SURVEY_SUBELEMENT_CLOSE_WINDOW', 'Кликнете, за да затворите прозореца');
+define('SURVEY_SUBELEMENT_CLEAR', 'Кликнете, за да изчистите съдържанието');
+define('SURVEY_SUBELEMENT_CONFIRM', 'Кликнете, за да добавите поделемента');
+
 
 define('SURVEY_PAGE_SURVEY_TITLE', 'ЗАГЛАВИЕ НА АНКЕТАТА:');
 define('SURVEY_PAGE_AVAILABLE_SURVEYS', 'Налични анкети');
@@ -383,9 +389,9 @@ define('SURVEY_QUESTION_PAGE_SURVEY_ACTIVE_DUE_TIME_INFO', 'Посочете ч�
 define('SURVEY_QUESTION_PAGE_SURVEY_ACTIVE_DUE_DATE', 'Активна до дата');
 define('SURVEY_QUESTION_PAGE_SURVEY_ACTIVE_DUE_DATE_INFO', 'Посочете дата, до която да се попълва запитването');
 define('SURVEY_QUESTION_PAGE_ACTIVE_SURVEY', 'Активна');
-define('SURVEY_QUESTION_PAGE_ACTIVE_SURVEY_INFO', 'Изберете, за да активирате запитването');
+define('SURVEY_QUESTION_PAGE_ACTIVE_SURVEY_INFO', 'Изберете, за да направите анкетата активна');
 define('SURVEY_QUESTION_PAGE_UNACTIVE_SURVEY', 'Неактивна');
-define('SURVEY_QUESTION_PAGE_UNACTIVE_SURVEY_INFO', 'Изберете, за да деактивирате запитването');
+define('SURVEY_QUESTION_PAGE_UNACTIVE_SURVEY_INFO', 'Изберете, за да направите анкетата неактивна');
 define('SURVEY_QUESTION_PAGE_STUDENT_GROUP', 'Група студенти');
 define('SURVEY_QUESTION_PAGE_STAFF_GROUP', 'Група служители');
 define('SURVEY_QUESTION_PAGE_LOCAL_GROUP', 'Ваши локални групи');
@@ -404,7 +410,7 @@ define('SURVEY_QUESTION_PAGE_ADD_ANSWER_DESCRIPTION', 'Описание');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_DESCRIPTION_INFO', 'Въведете описание на поделемента от анкетата');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TITLE', 'Добавете отговор към въпроса');
 define('SURVEY_EDIT_PAGE_ADD_QUESTION', 'Добавете отговор към анкетата');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE', 'Тип поделемент');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE', 'Тип на поделемента');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_INFO', 'Изберете тип за поделемента на анкетата');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_NULL', 'Изберете тип на поделемента');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXT', 'Свободен текст');

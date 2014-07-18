@@ -648,7 +648,7 @@ function get_user_staff_groups($user_id) {
     $user_groups = array();
     foreach ($db->query($sql) as $key => $value) {
         $groups_data[$key] = $value;
-        if(isset($groups_data[$key][0])) {
+        if (isset($groups_data[$key][0])) {
             $groups = $groups_data[$key][0];
         }
     }
@@ -662,7 +662,7 @@ function get_user_staff_groups($user_id) {
             error($error);
         }
     }
-    
+
     return $user_groups;
 }
 
@@ -681,7 +681,7 @@ function get_user_student_groups($user_id) {
     $user_groups = array();
     foreach ($db->query($sql) as $key => $value) {
         $groups_data[$key] = $value;
-        if(isset($groups_data[$key][0])) {
+        if (isset($groups_data[$key][0])) {
             $groups = $groups_data[$key][0];
         }
     }
@@ -695,7 +695,7 @@ function get_user_student_groups($user_id) {
             error($error);
         }
     }
-    
+
     return $user_groups;
 }
 
@@ -714,7 +714,7 @@ function get_user_local_groups($user_id) {
     $user_groups = array();
     foreach ($db->query($sql) as $key => $value) {
         $groups_data[$key] = $value;
-        if(isset($groups_data[$key][0])) {
+        if (isset($groups_data[$key][0])) {
             $groups = $groups_data[$key][0];
         }
     }
@@ -728,7 +728,7 @@ function get_user_local_groups($user_id) {
             error($error);
         }
     }
-    
+
     return $user_groups;
 }
 
@@ -1710,10 +1710,16 @@ function add_survey_element() {
         $answer = $session_answer;
         $answer->setSurvey($question_id);
         $answer->setIsActive(1);
-        $answer->setCreatedOn($time_now);
         $answer->setLastEditedOn($time_now);
-        $answer->store_in_db();
+        
+        if ($answer->getId() != NULL) {
+            $answer->update_in_db();
+        } else {
+            $answer->setCreatedOn($time_now);
+            $answer->store_in_db();
+        }
     }
+    
     $session_answers = array();
     $_SESSION['session_answers'] = serialize($session_answers);
 

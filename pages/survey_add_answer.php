@@ -1,5 +1,18 @@
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-ui.js"></script>
+<script type="text/javascript">
+    // define function to catch close btn click
+    function closeTab() {
+        document.getElementById('formSurveyAddSubelementCancelBtn').onclick = function() {
+            window.close();
+        };
+    }
+
+    // execute functions
+    $(document).ready(function() {
+        closeTab();
+    });
+</script>
 
 <div class="ac">
     <h3 class="no-float ac">
@@ -40,17 +53,29 @@
                 </h3>
                 <br/>
                 <div class="action no-margin ac ui-widget" style="padding-left: 50px;">
-                    <input id="formSurveyAddAnswerSubmit" class="button button-green" name="formSurveyAddAnswerSubmit" type="submit" value="<?php echo BTN_SUBMIT; ?>" />
-                    <input id="formSurveyAddAnswerReset" class="button button-orange" name="formSurveyAddAnswerReset" type="reset" value="<?php echo BTN_RESET; ?>" />
+                    <input 
+                        id="formSurveyAddAnswerSubmit" 
+                        class="button button-green" 
+                        name="formSurveyAddAnswerSubmit" 
+                        title="<?php echo SURVEY_SUBELEMENT_CONFIRM; ?>"
+                        type="submit" 
+                        value="<?php echo BTN_SUBMIT; ?>" />
+                    <input 
+                        id="formSurveyAddAnswerReset" 
+                        class="button button-orange" 
+                        name="formSurveyAddAnswerReset" 
+                        title="<?php echo SURVEY_SUBELEMENT_CLEAR; ?>"
+                        type="reset" 
+                        value="<?php echo BTN_RESET; ?>" />
                     <input id="formSurveyAddAnswerNew" class="button button-green" name="formSurveyAddAnswerNew" type="hidden" value="formSurveyAddAnswerNew" />
                     <input 
-                        id="formSurveyAddAnswerCancel" 
-                        class="button button-red fl" 
+                        id="formSurveyAddSubelementCancelBtn" 
+                        class="button button-red fl dn jsShow" 
+                        title="<?php echo SURVEY_SUBELEMENT_CLOSE_WINDOW; ?>"
                         type="button" 
-                        onclick="javascript:window.close();"
                         value="<?php echo BTN_CANCEL; ?>" />
                     <a 
-                        id="" 
+                        id="formSurveyAddSubelementCancelLink" 
                         class="button button-red fl dn" 
                         style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 
                         href="<?php isset($_SERVER['HTTP_REFERER']) ? print_r($_SERVER["HTTP_REFERER"]) : print_r(ROOT_DIR . '?page=logout'); ?>"><?php echo BTN_CANCEL; ?></a>
