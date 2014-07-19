@@ -1779,7 +1779,7 @@ function edit_survey_element() {
     $_SESSION['session_answers'] = serialize($session_answers);
 
     $cookie_key = 'msg';
-    $cookie_value = 'Вие избрахте елемент от анкетата за редакция!';
+    $cookie_value = 'Вие избрахте елемент от анкетата за редакция!<br />Отидете на раздел "Добавете или редактирайте елемент към анкетата"';
     setcookie($cookie_key, $cookie_value, time() + 1);
     header('Location: ' . ROOT_DIR . '?page=survey_edit');
 }
