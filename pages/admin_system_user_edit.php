@@ -18,7 +18,11 @@ $session_user = admin_get_session_user();
         </h4>
     </div>
     <div class="ac">
-        <form id="formEditUser" class="form ac" action="./?page=survey_user&amp;funct=user_funct" method="POST">
+        <form 
+            id="formEditUser" 
+            class="form ac" 
+            action="./?page=admin_system_user_edit&amp;funct=user_funct" 
+            method="POST">
             <div class="ac">
                 <section class="clearfix prefix_2">
                     <label for="formSurveyUserUsername">
@@ -189,7 +193,7 @@ $session_user = admin_get_session_user();
                 </section>
                 <br/>
                 <div class="action no-margin ac" style="padding-left: 40px;">
-                    <input  <?php if ($session_user->getId() == null) {
+                    <input  <?php if ($session_user->getId() == NULL) {
                                ?>
                             id="formSurveyUserSave"
                             name="formSurveyUserSave"
@@ -209,7 +213,7 @@ $session_user = admin_get_session_user();
                             class="button button-orange" 
                             type="submit"
                             value="Изчисти" />
-                    <input  <?php if ($session_user->getId() == null) {
+                    <input  <?php if ($session_user->getId() == NULL) {
                             ?>
                             id="formSurveyUserCancel"
                             name="formSurveyUserCancel"
@@ -293,7 +297,7 @@ $session_user = admin_get_session_user();
                         $survey = new Survey();
                         $survey->get_from_db($survey_id);
                         ?>
-                        <h3 class="no-float ac"><?php print_r($survey->getTitle()); ?></h3>
+                        <h3 class="no-float ac"><?php echo $survey_id . " "; print_r($survey->getTitle()); ?></h3>
                         <div>
                             <form id="formSurveyVote" class="form ac" action="<?php echo ROOT_DIR; ?>?page=survey_user&amp;funct=survey_funct" method="POST">
                                 <?php

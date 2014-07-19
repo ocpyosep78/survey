@@ -2392,7 +2392,7 @@ function user_funct() {
         if (isset($_SESSION['session_user'])) {
             unset($_SESSION['session_user']);
         }
-        header('location: ' . ROOT_DIR . '?page=survey_user');
+        header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
         die();
     } elseif ($function == 'Remove') {
         $session_user->setIsActive(0);
@@ -2400,13 +2400,13 @@ function user_funct() {
         $cookie_key = 'msg';
         $cookie_value = 'Вие успешно изтрихте потребител от системата!';
         setcookie($cookie_key, $cookie_value, time() + 1);
-        header('location: ' . ROOT_DIR . '?page=survey_admin');
+        header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
         die();
     } elseif ($function == 'Cancel') {
         if (isset($_SESSION['session_user'])) {
             unset($_SESSION['session_user']);
         }
-        header('location: ' . ROOT_DIR . '?page=survey_admin');
+        header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
         die();
     } elseif ($function == 'Edit') {
         $session_user->setUsername($_POST['formSurveyUserUsername']);
@@ -2429,13 +2429,12 @@ function user_funct() {
             $session_user->setAdmin(0);
         }
         $session_user->update_in_db();
-        if (isset($_SESSION['session_user'])) {
-            unset($_SESSION['session_user']);
-        }
+        $_SESSION['session_user'] = serialize($session_user);
+        
         $cookie_key = 'msg';
         $cookie_value = 'Вие успешно редактирахте потребител на системата!';
         setcookie($cookie_key, $cookie_value, time() + 1);
-        header('location: ' . ROOT_DIR . '?page=survey_admin');
+        header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
         die();
     } elseif ($function == 'Save') {
         $session_user->setUsername($_POST['formSurveyUserUsername']);
@@ -2444,7 +2443,7 @@ function user_funct() {
             $cookie_key = 'msg';
             $cookie_value = 'Потребителското име вече е заето!';
             setcookie($cookie_key, $cookie_value, time() + 1);
-            header('location: ' . ROOT_DIR . '?page=survey_user');
+            header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
             die();
         }
         $session_user->setEmail($_POST['formSurveyUserEmail']);
@@ -2453,7 +2452,7 @@ function user_funct() {
             $cookie_key = 'msg';
             $cookie_value = 'Email адресът е вече зает!';
             setcookie($cookie_key, $cookie_value, time() + 1);
-            header('location: ' . ROOT_DIR . '?page=survey_user');
+            header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
             die();
         }
         $session_user->setGivenname($_POST['formSurveyUserGivenname']);
@@ -2481,7 +2480,7 @@ function user_funct() {
         $cookie_key = 'msg';
         $cookie_value = 'Вие успешно добавихте потребител на системата!';
         setcookie($cookie_key, $cookie_value, time() + 1);
-        header('location: ' . ROOT_DIR . '?page=survey_admin');
+        header('location: ' . ROOT_DIR . '?page=admin_system_user_edit');
         die();
     }
     die();
