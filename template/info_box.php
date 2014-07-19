@@ -115,6 +115,13 @@ switch ($page) {
         </div>
         <?php
         break;
+    case 'survey_add_answer':
+        ?>
+        <div class="ac info_box box_orange">
+            <?php echo SURVEY_EDIT_SURVEY_PAGE_ADD_SUBELEMENT; ?>
+        </div>
+        <?php
+        break;
     case 'user_survey':
         ?>
         <div class="ac info_box box_orange">

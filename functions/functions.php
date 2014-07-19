@@ -44,7 +44,7 @@ function info($info) {
 
     // escape injection string info var
     try {
-        $info .= mysql_real_escape_string(stripslashes($info));
+        $info .= stripslashes($info);
     } catch (Exception $exc) {
 //        echo $exc->getTraceAsString();
     }
@@ -465,6 +465,7 @@ function get_session_survey() {
                 'local' => array());
             $_SESSION['session_groups'] = serialize($session_groups);
         }
+        $_SESSION['session_survey'] = serialize($session_survey);
     }
     return $session_survey;
 }
@@ -1303,9 +1304,17 @@ function login() {
         $password = filter_input(INPUT_POST, 'password');
 
         // try auth by ldap
-        login_ldap($username, $password);
+        try {
+            login_ldap($username, $password);
+        } catch (Exception $exc) {
+            error($exc->getTraceAsString());
+        }
         // try auth by mysql
-        login_mysql($username, $password);
+        try {
+            login_mysql($username, $password);
+        } catch (Exception $exc) {
+            error($exc->getTraceAsString());
+        }
     }
 }
 
@@ -1649,11 +1658,12 @@ function add_survey_element() {
     $session_survey = get_session_survey();
 
     if ($session_survey->getId() == 'null') {
+        $session_survey->setStatus(0);
         $session_survey->store_in_db();
         // get survey id
         $sql = "SELECT id
             FROM surveys
-            WHERE is_active = '1'
+            WHERE is_active = '0'
             ORDER BY id DESC
             LIMIT 1;";
 
@@ -1711,7 +1721,7 @@ function add_survey_element() {
         $answer->setSurvey($question_id);
         $answer->setIsActive(1);
         $answer->setLastEditedOn($time_now);
-        
+
         if ($answer->getId() != NULL) {
             $answer->update_in_db();
         } else {
@@ -1719,7 +1729,7 @@ function add_survey_element() {
             $answer->store_in_db();
         }
     }
-    
+
     $session_answers = array();
     $_SESSION['session_answers'] = serialize($session_answers);
 
@@ -1943,7 +1953,16 @@ function survey_funct() {
         die();
     }
 
+    // set empty survey
+    $session_survey = new Survey();
+    $session_survey = get_session_survey();
+
     $survey_id = $_POST['formSurveyFunction'];
+    if ($survey_id != "") {
+        $session_survey->get_from_db($survey_id);
+    }
+
+    // get the function
     $function = '';
 
     foreach ($_POST as $key => $post) {
@@ -1955,139 +1974,136 @@ function survey_funct() {
     if ($function == 'Print') {
         $_SESSION['survey_id'] = $survey_id;
         header('location: ' . ROOT_DIR . '?print=survey_print');
-    } elseif ($function == 'Edit') {
-        $_SESSION['survey_id'] = $survey_id;
-        header('location: ' . ROOT_DIR . '?page=survey_question');
         die();
     } elseif ($function == 'Remove') {
-        // set connection var
-        global $db;
-        //query to delete survey
-        $sql = "UPDATE surveys
-                SET is_active = '0'
-                WHERE is_active = '1' AND id = '" . $survey_id . "';";
-        $db->exec($sql);
-        if (isset($_SESSION['survey_id'])) {
-            unset($_SESSION['survey_id']);
+        if ($session_survey->getId() == NULL) {
+            //query to delete survey
+            $session_survey->setStatus(0);
+            $session_survey->update_in_db();
         }
-        if (isset($_SESSION['session_group'])) {
-            unset($_SESSION['session_group']);
+        if (isset($_SESSION['session_survey'])) {
+            unset($_SESSION['session_survey']);
         }
-        if (isset($_SESSION['answers'])) {
-            unset($_SESSION['answers']);
+        if (isset($_SESSION['session_question'])) {
+            unset($_SESSION['session_question']);
         }
-        header('location: ' . ROOT_DIR . '?page=my_surveys');
-    } elseif ($function == 'Reset') {
-        if (isset($_SESSION['session_group'])) {
-            unset($_SESSION['session_group']);
+        if (isset($_SESSION['session_groups'])) {
+            unset($_SESSION['session_groups']);
         }
-        if (isset($_SESSION['answers'])) {
-            unset($_SESSION['answers']);
+        if (isset($_SESSION['session_answers'])) {
+            unset($_SESSION['session_answers']);
         }
-        header('location: ' . ROOT_DIR . '?page=survey_question');
+        header('location: ' . ROOT_DIR . '?page=admin_survey');
         die();
-    } elseif ($function == 'Create') {
-        if (!isset($_SESSION['answers'])) {
-            $cookie_key = 'msg';
-            $cookie_value = 'Моля, добавете поне 1 отговор към анкетната!';
-            setcookie($cookie_key, $cookie_value, time() + 1);
-            header('Location: ' . ROOT_DIR . '?page=survey_question');
+    } elseif ($function == 'Reset') {
+        if (isset($_SESSION['session_survey'])) {
+            unset($_SESSION['session_survey']);
         }
-        if (!isset($_SESSION['session_group'])) {
+        if (isset($_SESSION['session_groups'])) {
+            unset($_SESSION['session_groups']);
+        }
+        if (isset($_SESSION['session_answers'])) {
+            unset($_SESSION['session_answers']);
+        }
+        if (isset($_SESSION['session_question'])) {
+            unset($_SESSION['session_question']);
+        }
+        header('location: ' . ROOT_DIR . '?page=survey_edit');
+        die();
+    } elseif ($function == 'Edit') {
+        // check if post a survey id and asign
+        if (!isset($_POST['formSurveyFunction'])) {
+            // or go back
+            $cookie_key = 'msg';
+            $cookie_value = 'Не е избрана анкета!';
+            setcookie($cookie_key, $cookie_value, time() + 1);
+            header('Location: ' . ROOT_DIR . '?page=admin_survey');
+            die();
+        }
+
+        $session_survey->get_from_db(intval($_POST['formSurveyFunction']));
+        // check for illegal access
+        if (($session_survey->getCreatedBy() != $user->getId()) &&
+                ($user->getAdmin() != 1)) {
+            error('Опит за неоторизиран достъп!');
+            $cookie_key = 'msg';
+            $cookie_value = 'Опит за неоторизиран достъп!';
+            setcookie($cookie_key, $cookie_value, time() + 1);
+            header('Location: ' . ROOT_DIR . '?page=admin_survey');
+            die();
+        }
+
+        $_SESSION['session_survey'] = serialize($session_survey);
+        $session_groups = array();
+        $session_groups['type'] = '';
+        $session_groups['student'] = get_survey_student_groups($session_survey->getId());
+        $session_groups['staff'] = get_survey_staff_groups($session_survey->getId());
+        $session_groups['local'] = get_survey_local_groups($session_survey->getId());
+        $_SESSION['session_groups'] = serialize($session_groups);
+
+        $cookie_key = 'msg';
+        $cookie_value = 'Вие избрахте анкета за редакция!';
+        setcookie($cookie_key, $cookie_value, time() + 1);
+        header('Location: ' . ROOT_DIR . '?page=survey_edit');
+        die();
+    } elseif ($function == 'Save') {
+        // check for answers
+        $session_answers = array();
+        $session_answers = get_session_answers();
+
+        // check for groups
+        $session_groups = array();
+        $session_groups = get_session_groups();
+        if (empty($session_groups['student']) &&
+                empty($session_groups['staff']) &&
+                empty($session_groups['staff_departments']) &&
+                empty($session_groups['local'])) {
             $cookie_key = 'msg';
             $cookie_value = 'Моля, добавете поне 1 група!';
             setcookie($cookie_key, $cookie_value, time() + 1);
-            header('Location: ' . ROOT_DIR . '?page=survey_question');
+            header('Location: ' . ROOT_DIR . '?page=survey_edit');
+            die();
         }
 
-        $time_now = $time = date("Y-m-d H:i:s");
-
-        $groups = unserialize($_SESSION['session_group']);
-        $studentGroups = serialize($groups['student']);
-
-        if (is_array($groups['staff'])) {
-            $staffGroups = serialize(array_merge($groups['staff'], $groups['staff_departments']));
-        } else {
-            $staffGroups = serialize($groups['staff_departments']);
+        // get current time
+        $time_now = date("Y-m-d H:i:s");
+        
+        if(isset($session_groups['staff_departments']) && is_array($session_groups['staff_departments'])) {
+            if(is_array($session_groups['staff'])) {
+                $session_groups['staff'] = array_merge($session_groups['staff'], $session_groups['staff_departments']);
+            } else {
+                $session_groups['staff'] = $session_groups['staff_departments'];
+            }
         }
-        $localGroups = serialize($groups['local']);
-        $session_answers = unserialize($_SESSION['answers']);
         $available_from = $_POST['formSurveyFromDate'] . " " . $_POST['formSurveyFromHour'] . ":00";
         $available_due = $_POST['formSurveyDueDate'] . " " . $_POST['formSurveyDueHour'] . ":00";
-        $question = $_POST['formSurveyQuestion'];
+        $title = $_POST['formSurveyTitle'];
         $status = $_POST['formSurveyStatus'];
-
-        if ($survey_id != '') {
-            $survey = new Survey();
-
-            // update answers
-            $answers = get_survey_answers($survey_id);
-            $active_answers = array();
-            foreach ($session_answers as $session_answer) {
-                if (!in_array($session_answer->getId(), $answers)) {
-                    $session_answer->setIsActive(1);
-                    $session_answer->setCreatedOn($time_now);
-                    $session_answer->setLastEditedOn($time_now);
-                    $session_answer->setSurvey($survey_id);
-                    $session_answer->store_in_db();
-                } else {
-                    array_push($active_answers, $session_answer->getId());
-                }
-            }
-            foreach ($answers as $answer_id) {
-                if (!in_array($answer_id, $active_answers)) {
-                    $answer = new Answer();
-                    $answer->get_from_db($answer_id);
-                    $answer->setIsActive(0);
-                    $answer->setLastEditedOn($time_now);
-                    $answer->update_in_db();
-                }
-            }
-            $survey->get_from_db($survey_id);
-            $survey->setLastEditedOn($time_now);
-            $survey->setIsActive(1);
-            $survey->setAvailableFrom($available_from);
-            $survey->setAvailableDue($available_due);
-            $survey->setQuestion($question);
-            $survey->setStatus($status);
-            $survey->setStaffGroups($staffGroups);
-            $survey->setStudentGroups($studentGroups);
-            $survey->setLocalGroups($localGroups);
-            $survey->update_in_db();
-
+        
+        $session_survey->setStudentGroups(serialize($session_groups['student']));
+        $session_survey->setStaffGroups(serialize($session_groups['staff']));
+        $session_survey->setLocalGroups(serialize($session_groups['local']));
+        $session_survey->setAvailableFrom($available_from);
+        $session_survey->setAvailableDue($available_due);
+        $session_survey->setTitle($title);
+        $session_survey->setStatus($status);
+        
+        if ($session_survey->getId() != NULL) {
+            $session_survey->update_in_db();
+            
             $cookie_key = 'msg';
-            $cookie_value = 'Вие успешно редактирахте анкета!';
+            $cookie_value = 'Вие успешно редактирахте анкетата!';
             setcookie($cookie_key, $cookie_value, time() + 1);
-            header('Location: ' . ROOT_DIR . '?page=my_surveys');
+            header('Location: ' . ROOT_DIR . '?page=survey_edit');
+            die();
         } else {
-            $survey = new Survey();
-            $survey->setCreatedOn($time_now);
-            $survey->setCreatedBy($user->getId());
-            $survey->setLastEditedOn($time_now);
-            $survey->setIsActive(1);
-            $survey->setAvailableFrom($available_from);
-            $survey->setAvailableDue($available_due);
-            $survey->setQuestion($question);
-            $survey->setStatus($status);
-            $survey->setStaffGroups($staffGroups);
-            $survey->setStudentGroups($studentGroups);
-            $survey->setLocalGroups($localGroups);
-            $survey_id = $survey->store_in_db();
-
-            foreach ($session_answers as $session_answer) {
-                $session_answer->setIsActive(1);
-                $session_answer->setCreatedOn($time_now);
-                $session_answer->setLastEditedOn($time_now);
-                $session_answer->setSurvey($survey_id);
-                $session_answer->store_in_db();
-            }
-
             $cookie_key = 'msg';
-            $cookie_value = 'Вие успешно създадохте анкета!';
+            $cookie_value = 'Моля, добавете поне един елемент към анкетата!';
             setcookie($cookie_key, $cookie_value, time() + 1);
-            header('Location: ' . ROOT_DIR . '?page=my_surveys');
+            header('Location: ' . ROOT_DIR . '?page=survey_edit');
+            die();
         }
-        unset($_SESSION['session_group']);
+        unset($_SESSION['session_groups']);
     } elseif ($function == 'VoteDelete') {
         if (!isset($_SESSION['session_user']) || !isset($_SESSION['session_user'])) {
             logout();
@@ -2120,14 +2136,6 @@ function survey_funct() {
         $cookie_value = 'Вие успешно изтрихте вот на потребителя!';
         setcookie($cookie_key, $cookie_value, time() + 1);
         header('Location: ' . ROOT_DIR . '?page=survey_user');
-        die();
-    } elseif ($function == 'CreatorView') {
-        $survey_id = $_POST['formSurveyFunction'];
-
-        $_SESSION['surveyCreatorViewSurveyId'] = $survey_id;
-
-        var_dump($_SESSION);
-        header('Location: ' . ROOT_DIR . '?page=survey_edit');
         die();
     } elseif ($function == 'UserView') {
         $survey_id = $_POST['formSurveyFunction'];

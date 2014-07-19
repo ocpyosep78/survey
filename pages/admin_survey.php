@@ -53,7 +53,7 @@ if (isset($_SESSION['group_users'])) {
                                   method="POST">
                                 <input id="formSurveyView" 
                                        class="button button-green" 
-                                       name="formSurveyCreatorView" 
+                                       name="formSurveyEdit" 
                                        type="submit"
                                        value="<?php echo BTN_SURVEY_VIEW; ?>"
                                        style="margin-left: 50px;" />
