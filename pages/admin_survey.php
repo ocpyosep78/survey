@@ -11,8 +11,14 @@ if (isset($_SESSION['group'])) {
 if (isset($_SESSION['group_id'])) {
     unset($_SESSION['survey_id']);
 }
-if (isset($_SESSION['answers'])) {
-    unset($_SESSION['answers']);
+if (isset($_SESSION['session_survey'])) {
+    unset($_SESSION['session_survey']);
+}
+if (isset($_SESSION['session_question'])) {
+    unset($_SESSION['session_question']);
+}
+if (isset($_SESSION['session_answers'])) {
+    unset($_SESSION['session_answers']);
 }
 if (isset($_SESSION['session_group'])) {
     unset($_SESSION['session_group']);

@@ -1976,24 +1976,15 @@ function survey_funct() {
         header('location: ' . ROOT_DIR . '?print=survey_print');
         die();
     } elseif ($function == 'Remove') {
-        if ($session_survey->getId() == NULL) {
+        if ($session_survey->getId() != NULL) {
             //query to delete survey
-            $session_survey->setStatus(0);
+            $session_survey->setIsActive(0);
             $session_survey->update_in_db();
         }
-        if (isset($_SESSION['session_survey'])) {
-            unset($_SESSION['session_survey']);
-        }
-        if (isset($_SESSION['session_question'])) {
-            unset($_SESSION['session_question']);
-        }
-        if (isset($_SESSION['session_groups'])) {
-            unset($_SESSION['session_groups']);
-        }
-        if (isset($_SESSION['session_answers'])) {
-            unset($_SESSION['session_answers']);
-        }
-        header('location: ' . ROOT_DIR . '?page=admin_survey');
+        $cookie_key = 'msg';
+        $cookie_value = 'Вие успешно изтрихте Ваша анкета!';
+        setcookie($cookie_key, $cookie_value, time() + 1);
+        header('Location: ' . ROOT_DIR . '?page=admin_survey');
         die();
     } elseif ($function == 'Reset') {
         if (isset($_SESSION['session_survey'])) {
@@ -2067,9 +2058,9 @@ function survey_funct() {
 
         // get current time
         $time_now = date("Y-m-d H:i:s");
-        
-        if(isset($session_groups['staff_departments']) && is_array($session_groups['staff_departments'])) {
-            if(is_array($session_groups['staff'])) {
+
+        if (isset($session_groups['staff_departments']) && is_array($session_groups['staff_departments'])) {
+            if (is_array($session_groups['staff'])) {
                 $session_groups['staff'] = array_merge($session_groups['staff'], $session_groups['staff_departments']);
             } else {
                 $session_groups['staff'] = $session_groups['staff_departments'];
@@ -2079,7 +2070,7 @@ function survey_funct() {
         $available_due = $_POST['formSurveyDueDate'] . " " . $_POST['formSurveyDueHour'] . ":00";
         $title = $_POST['formSurveyTitle'];
         $status = $_POST['formSurveyStatus'];
-        
+
         $session_survey->setStudentGroups(serialize($session_groups['student']));
         $session_survey->setStaffGroups(serialize($session_groups['staff']));
         $session_survey->setLocalGroups(serialize($session_groups['local']));
@@ -2087,10 +2078,10 @@ function survey_funct() {
         $session_survey->setAvailableDue($available_due);
         $session_survey->setTitle($title);
         $session_survey->setStatus($status);
-        
+
         if ($session_survey->getId() != NULL) {
             $session_survey->update_in_db();
-            
+
             $cookie_key = 'msg';
             $cookie_value = 'Вие успешно редактирахте анкетата!';
             setcookie($cookie_key, $cookie_value, time() + 1);
