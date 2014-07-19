@@ -472,7 +472,7 @@ $session_answers = get_session_answers();
             <br/><br/><br/>
         </div>
         <h3 class="no-float ac" id="survey_add_answer">
-<?php echo EDIT_SURVEY_PAGE_ADD_EDIT_ELEMENT_TITLE; ?>
+            <?php echo EDIT_SURVEY_PAGE_ADD_EDIT_ELEMENT_TITLE; ?>
         </h3>
         <div class="ac">
             <section>
@@ -488,7 +488,7 @@ $session_answers = get_session_answers();
                             <div class="clearfix">
                                 <span class="grid_3">
                                     <h3>
-<?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE; ?>
+                                        <?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE; ?>
                                     </h3>
                                 </span>
                                 <label for="formSurveyAddElementTypeQuestion"><?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_QUESTION_TITLE; ?>
@@ -500,9 +500,9 @@ $session_answers = get_session_answers();
                                        type="radio"
                                        value="0"
                                        required="required"
-<?php
-($session_question->getType() == '0') ? print_r('checked="checked"') : print_r('');
-?> />
+                                       <?php
+                                       ($session_question->getType() == '0') ? print_r('checked="checked"') : print_r('');
+                                       ?> />
                                 <br /><br /><br />
                                 <label for="formSurveyAddElementTypeTextbox"><?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_TEXTBOX_TITLE; ?>
                                     <em>*</em>
@@ -513,9 +513,9 @@ $session_answers = get_session_answers();
                                        type="radio"
                                        value="1"
                                        required="required"
-<?php
-($session_question->getType() == '1') ? print_r('checked="checked"') : print_r('');
-?> />
+                                       <?php
+                                       ($session_question->getType() == '1') ? print_r('checked="checked"') : print_r('');
+                                       ?> />
                             </div>
 
                         </section>
@@ -539,18 +539,18 @@ $session_answers = get_session_answers();
                             <div class="clearfix">
                                 <span class="grid_3">
                                     <h3>
-<?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TITLE; ?>
+                                        <?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TITLE; ?>
                                     </h3>
                                 </span>
                             </div>
-<?php
-if (!empty($session_answers)) {
-    ?>
+                            <?php
+                            if (!empty($session_answers)) {
+                                ?>
                                 <div class="clearfix">
-                                <?php
-                                foreach ($session_answers as $key => $answer) {
-                                    if (($answer->getType() == "text") || ($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
-                                        ?>
+                                    <?php
+                                    foreach ($session_answers as $key => $answer) {
+                                        if (($answer->getType() == "text") || ($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
+                                            ?>
                                             <label for="answer<?php print_r($key); ?>Text"><?php print_r($answer->getValue()); ?>:
                                                 <small><?php print_r($answer->getDescription()); ?></small>
                                             </label>
@@ -564,9 +564,9 @@ if (!empty($session_answers)) {
                                                 <span class="delete"></span>
                                             </a>
                                             <br>
-            <?php
-        } elseif ($answer->getType() == "textbox") {
-            ?>
+                                            <?php
+                                        } elseif ($answer->getType() == "textbox") {
+                                            ?>
                                             <label for="answer<?php print_r($key); ?>Text"><?php echo EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TEXTBOX_TITLE; ?>:
                                             </label>
                                             <textarea id="answer<?php print_r($key); ?>Text" 
@@ -579,14 +579,14 @@ if (!empty($session_answers)) {
                                                 <span class="delete"></span>
                                             </a>
                                             <br/><br/>
-            <?php
-        }
-    }
-    ?>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
                                 </div>
-                                    <?php
-                                }
-                                ?>
+                                <?php
+                            }
+                            ?>
                         </section>
                         <div class="ac">
                             <div class="action no-margin ac ui-widget">
@@ -596,7 +596,7 @@ if (!empty($session_answers)) {
                                     type="button" 
                                     style="margin-left: 290px;"
                                     value="<?php echo BTN_ADD; ?>"
-                                    onclick='javascript:window.open("<?php print_r(ROOT_DIR . '?page=survey_add_answer'); ?>", "Add new answer", "width=900, height=600");' />
+                                    onclick='javascript:window.open("<?php print_r(ROOT_DIR . '?page=survey_add_answer'); ?>", "Add new answer", "width=960, height=600");' />
                                 <a 
                                     id="formSurveyAddSubElementA"
                                     class="button button-blue jsHide" 
@@ -623,9 +623,9 @@ if (!empty($session_answers)) {
             <b><?php echo EDIT_SURVEY_PAGE_SURVEY_ELEMENTS; ?></b>
         </h3>
     </div>
-<?php
-if ($session_survey->getId() == "103") {
-    ?>
+    <?php
+    if ($session_survey->getId() == "103") {
+        ?>
         <style type="text/css">
             #logoStudentCouncil {
                 background-size: cover;
@@ -645,37 +645,37 @@ if ($session_survey->getId() == "103") {
         <div id="logoStudentCouncil" class="ac info_box">
             <img src="<?php echo ROOT_DIR . 'images/studentsLogo.png'; ?>" style="width: 100%;" />
         </div>
-    <?php
-}
-
-$survey_questions = get_survey_questions($session_survey->getId());
-if (!empty($survey_questions)) {
-    ?>
-        <div class="accordion">
         <?php
-        foreach ($survey_questions as $question_id) {
-            $question = new Question();
-            $question->get_from_db($question_id);
-            if ($question->getType() == 1) {
-                ?>
+    }
+
+    $survey_questions = get_survey_questions($session_survey->getId());
+    if (!empty($survey_questions)) {
+        ?>
+        <div class="accordion">
+            <?php
+            foreach ($survey_questions as $question_id) {
+                $question = new Question();
+                $question->get_from_db($question_id);
+                if ($question->getType() == 1) {
+                    ?>
                 </div>
                 <div class="clearfix">
                     <h3 class="no-float ac"><?php print_r($question->getTitle()); ?></h3>
 
-            <?php
-            $answers = get_survey_answers($question->getId());
-            foreach ($answers as $answer_id) {
-                $answer = new Answer ();
-                $answer->get_from_db($answer_id);
-                if ($answer->getType() == "textbox") {
-                    ?>
+                    <?php
+                    $answers = get_survey_answers($question->getId());
+                    foreach ($answers as $answer_id) {
+                        $answer = new Answer ();
+                        $answer->get_from_db($answer_id);
+                        if ($answer->getType() == "textbox") {
+                            ?>
                             <div  class="al">
                                 &emsp;&emsp;&emsp;<?php print_r($answer->getValue()); ?>
                             </div>
-                    <?php
-                }
-            }
-            ?>
+                            <?php
+                        }
+                    }
+                    ?>
                     <div class="al">
                         <form class="form ac" 
                               action="<?php echo ROOT_DIR . '?page=survey_edit&amp;funct=edit_survey_element' ?>" 
@@ -700,9 +700,9 @@ if (!empty($survey_questions)) {
                 </div>
 
                 <div class="accordion">
-            <?php
-        } elseif ($question->getType() == 0) {
-            ?>
+                    <?php
+                } elseif ($question->getType() == 0) {
+                    ?>
                     <h3 class="no-float ac"><?php print_r($question->getTitle()); ?></h3>
                     <div>
                         <form id="formSurvey<?php print_r($question->getId()); ?>" 
@@ -711,31 +711,31 @@ if (!empty($survey_questions)) {
                               method="POST">
                             <div class="ac">
                                 <section class="clearfix prefix_2">
-            <?php
-            $answers = get_survey_answers($question->getId());
-            if (!empty($answers)) {
-                foreach ($answers as $answer_id) {
-                    $answer = new Answer();
-                    $answer->get_from_db($answer_id);
-                    if (($answer->getType() == "text") || ($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
-                        ?>
+                                    <?php
+                                    $answers = get_survey_answers($question->getId());
+                                    if (!empty($answers)) {
+                                        foreach ($answers as $answer_id) {
+                                            $answer = new Answer();
+                                            $answer->get_from_db($answer_id);
+                                            if (($answer->getType() == "text") || ($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
+                                                ?>
                                                 <label for = "formSurvey<?php print_r($session_survey->getId()); ?>Answer<?php print_r($answer->getId()); ?>"><?php print_r($answer->getValue()); ?>
                                                     <small><?php print_r($answer->getDescription()); ?></small>
                                                 </label>
                                                 <input id="formSurvey<?php print_r($session_survey->getId()); ?>Answer<?php print_r($answer->getId()); ?>" 
-                        <?php
-                        if ($answer->getType() == "radio") {
-                            print 'name="formSurvey' . $session_survey->getId() . 'Answer" ';
-                        } else {
-                            print 'name="formSurvey' . $session_survey->getId() . 'Answer' . $answer->getId() . 'Type' . $answer->getType() . '" ';
-                        }
-                        ?>type="<?php print $answer->getType(); ?>" 
+                                                <?php
+                                                if ($answer->getType() == "radio") {
+                                                    print 'name="formSurvey' . $session_survey->getId() . 'Answer" ';
+                                                } else {
+                                                    print 'name="formSurvey' . $session_survey->getId() . 'Answer' . $answer->getId() . 'Type' . $answer->getType() . '" ';
+                                                }
+                                                ?>type="<?php print $answer->getType(); ?>" 
                                                        value="<?php $answer->getType() == "text" ? print_r("") : print_r($answer->getId()); ?>"
                                                        disabled="disabled" />
                                                 <br/><br/>
-                        <?php
-                    } elseif ($answer->getType() == "textbox") {
-                        ?>
+                                                <?php
+                                            } elseif ($answer->getType() == "textbox") {
+                                                ?>
                                             </section>
                                             <section class="clearfix">
                                                 <div class="al">
@@ -744,11 +744,11 @@ if (!empty($survey_questions)) {
                                                 <br/><br/>
                                             </section>
                                             <section class="clearfix prefix_2">
-                        <?php
-                    }
-                }
-            }
-            ?>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    ?>
                                 </section>
                             </div>
                             <br/>
@@ -769,13 +769,13 @@ if (!empty($survey_questions)) {
                         </form>
                         <br/><br/>
                     </div>
-            <?php
-        }
-        // check if text or question
+                    <?php
+                }
+                // check if text or question
+            }
+            ?>
+        </div>
+        <?php
     }
     ?>
-        </div>
-            <?php
-        }
-        ?>
 </div>
