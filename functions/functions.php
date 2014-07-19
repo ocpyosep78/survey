@@ -68,7 +68,7 @@ function error($error) {
     // set connection var
     global $db;
     $error = "";
-
+    
     // escape injection string error var
     try {
         $error .= stripslashes($error);
@@ -745,26 +745,23 @@ function select_page($page) {
         case 'survey':
             require_once ROOT_DIR . 'pages/survey.php';
             break;
-        case 'my_surveys':
-            require_once ROOT_DIR . 'pages/my_surveys.php';
-            break;
-        case 'survey_admin':
-            require_once ROOT_DIR . 'pages/survey_admin.php';
-            break;
         case 'survey_contact':
             require_once ROOT_DIR . 'pages/survey_contact.php';
             break;
         case 'survey_group':
             require_once ROOT_DIR . 'pages/survey_group.php';
             break;
-        case 'survey_user':
-            require_once ROOT_DIR . 'pages/survey_user.php';
-            break;
         case 'survey_edit':
             require_once ROOT_DIR . 'pages/survey_edit.php';
             break;
         case 'help':
             require_once ROOT_DIR . 'pages/help.php';
+            break;
+        case 'admin_system':
+            require_once ROOT_DIR . 'pages/admin_system.php';
+            break;
+        case 'admin_system_user_edit':
+            require_once ROOT_DIR . 'pages/admin_system_user_edit.php';
             break;
         case 'admin_survey':
             require_once ROOT_DIR . 'pages/admin_survey.php';
@@ -2042,6 +2039,18 @@ function survey_funct() {
         $session_answers = array();
         $session_answers = get_session_answers();
 
+        
+        $available_from = $_POST['formSurveyFromDate'] . " " . $_POST['formSurveyFromHour'] . ":00";
+        $available_due = $_POST['formSurveyDueDate'] . " " . $_POST['formSurveyDueHour'] . ":00";
+        $title = $_POST['formSurveyTitle'];
+        $status = $_POST['formSurveyStatus'];
+
+        $session_survey->setAvailableFrom($available_from);
+        $session_survey->setAvailableDue($available_due);
+        $session_survey->setTitle($title);
+        $session_survey->setStatus($status);
+        $_SESSION['session_survey'] = serialize($session_survey);
+        
         // check for groups
         $session_groups = array();
         $session_groups = get_session_groups();
@@ -2066,18 +2075,6 @@ function survey_funct() {
                 $session_groups['staff'] = $session_groups['staff_departments'];
             }
         }
-        $available_from = $_POST['formSurveyFromDate'] . " " . $_POST['formSurveyFromHour'] . ":00";
-        $available_due = $_POST['formSurveyDueDate'] . " " . $_POST['formSurveyDueHour'] . ":00";
-        $title = $_POST['formSurveyTitle'];
-        $status = $_POST['formSurveyStatus'];
-
-        $session_survey->setStudentGroups(serialize($session_groups['student']));
-        $session_survey->setStaffGroups(serialize($session_groups['staff']));
-        $session_survey->setLocalGroups(serialize($session_groups['local']));
-        $session_survey->setAvailableFrom($available_from);
-        $session_survey->setAvailableDue($available_due);
-        $session_survey->setTitle($title);
-        $session_survey->setStatus($status);
 
         if ($session_survey->getId() != NULL) {
             $session_survey->update_in_db();

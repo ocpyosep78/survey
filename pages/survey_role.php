@@ -37,14 +37,14 @@ if (isset($_SESSION['session_message'])) {
                 ?>
                 <div class="action no-margin ac">
                     <br/>
-                    <a class="button button-green" style="color: #fff; width: 80px; margin-left: 5px; margin-right: 5px;" href="<?php echo ROOT_DIR; ?>?page=survey_admin"><?php echo BTN_ENTER; ?></a>
+                    <a class="button button-green" style="color: #fff; width: 80px; margin-left: 5px; margin-right: 5px;" href="<?php echo ROOT_DIR; ?>?page=admin_system"><?php echo BTN_ENTER; ?></a>
                     <a class="button button-red" style="color: #fff; width: 80px; margin-left: 5px; margin-right: 5px;" href="<?php print_r(ROOT_DIR . '?funct=logout'); ?>"><?php echo BTN_CANCEL; ?></a>
                 </div>
                 <br/><br/><br/>
             </div>
             <?php
         }
-        // check if can create surveys
+        // check if user can create surveys
         if ($user->getCanAsk() == 1) {
             ?>
             <h3 class="no-float ac"><?php echo SURVEY_ROLE_PAGE_CAN_ASK_TITLE; ?></h3>
