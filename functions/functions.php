@@ -2081,6 +2081,7 @@ function survey_funct() {
 
         if ($session_survey->getId() != NULL) {
             $session_survey->update_in_db();
+            $_SESSION['session_survey'] = serialize($session_survey);
 
             $cookie_key = 'msg';
             $cookie_value = 'Вие успешно редактирахте анкетата!';
