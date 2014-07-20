@@ -62,7 +62,6 @@
                     ?>
                     <h3 class="no-float ac"><?php
                         print_r($question->getTitle());
-                        echo " " . $question->getId();
                         ?></h3>
                     <div>
                         <?php

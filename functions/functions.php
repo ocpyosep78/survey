@@ -68,7 +68,7 @@ function error($error) {
     // set connection var
     global $db;
     $error = "";
-    
+
     // escape injection string error var
     try {
         $error .= stripslashes($error);
@@ -1623,6 +1623,9 @@ function add_survey_element() {
     // get global user object
     global $user;
 
+    $session_question = new Question();
+    $session_question = get_session_question();
+
     // get current time
     $time_now = date("Y-m-d H:i:s");
 
@@ -1633,6 +1636,15 @@ function add_survey_element() {
             die();
         }
     }
+
+    // set question obj
+    $session_question = new Question();
+    $session_question = get_session_question();
+    $session_question->setTitle($_POST['formSurveyAddElementTitle']);
+    $session_question->setType($_POST['formSurveyAddElementType']);
+    $session_question->setCreatedOn($time_now);
+    $session_question->setLastEditedOn($time_now);
+    $_SESSION['session_question'] = serialize($session_question);
 
     // get session answers
     $session_answers = array();
@@ -1645,17 +1657,12 @@ function add_survey_element() {
         die();
     }
 
-    // set question obj
-    $session_question = new Question();
-    $session_question = get_session_question();
-    $session_question->setTitle($_POST['formSurveyAddElementTitle']);
-    $session_question->setType($_POST['formSurveyAddElementType']);
-
     $session_survey = new Survey();
     $session_survey = get_session_survey();
 
-    if ($session_survey->getId() == 'null') {
+    if ($session_survey->getId() == NULL) {
         $session_survey->setStatus(0);
+        $session_survey->setCreatedBy($user->getId());
         $session_survey->store_in_db();
         // get survey id
         $sql = "SELECT id
@@ -1672,6 +1679,7 @@ function add_survey_element() {
         // set id to session survey
         $survey_id = $data[0]['id'];
         $session_survey->setId($survey_id);
+        $_SESSION['session_survey'] = serialize($session_survey);
 
         $session_question->setSurvey($session_survey->getId());
         $session_question->setIsActive(1);
@@ -1679,33 +1687,33 @@ function add_survey_element() {
         $session_question->getLastEditedOn($time_now);
         // store question in db
         $session_question->store_in_db();
-
-        // get question id
-        $sql = "SELECT id
-            FROM questions
-            WHERE is_active = '1'
-            ORDER BY id DESC
-            LIMIT 1;";
-
-        $data = array();
-        foreach ($db->query($sql) as $key => $value) {
-            $data[$key] = $value;
-        }
-        // set id to session question
-        $question_id = $data[0]['id'];
     } else {
         $session_survey->setLastEditedOn($time_now);
         $session_survey->update_in_db();
         $session_question->setSurvey($session_survey->getId());
         $session_question->setIsActive(1);
-        $session_question->getCreatedOn($time_now);
-        $session_question->getLastEditedOn($time_now);
         // store question in db
-        $session_question->update_in_db();
+        $session_question->store_in_db();
     }
-    if ($session_question->getId() != 'null') {
-        $question_id = $session_question->getId();
+
+    echo '<pre>';
+    var_dump($session_survey);
+    var_dump($session_question);
+    echo '</pre>';
+//    die();
+    // get last question id
+    $sql = "SELECT id
+            FROM questions
+            WHERE is_active = '1'
+            ORDER BY id DESC
+            LIMIT 1;";
+
+    $data = array();
+    foreach ($db->query($sql) as $key => $value) {
+        $data[$key] = $value;
     }
+    // set id to session question
+    $question_id = $data[0]['id'];
 
     // unset session question to release memory
     $question_empty = new Question();
@@ -1944,6 +1952,9 @@ function survey_funct() {
     // set connection var
     global $db;
 
+    // get current time
+    $time_now = date("Y-m-d H:i:s");
+
     // protect from unauthorized access
     if (!isset($user) or ! isset($_POST['formSurveyFunction'])) {
         logout();
@@ -2039,18 +2050,21 @@ function survey_funct() {
         $session_answers = array();
         $session_answers = get_session_answers();
 
-        
+
         $available_from = $_POST['formSurveyFromDate'] . " " . $_POST['formSurveyFromHour'] . ":00";
         $available_due = $_POST['formSurveyDueDate'] . " " . $_POST['formSurveyDueHour'] . ":00";
         $title = $_POST['formSurveyTitle'];
         $status = $_POST['formSurveyStatus'];
 
+        $session_survey->setIsActive(1);
+        $session_survey->setCreatedOn($time_now);
+        $session_survey->setLastEditedOn($time_now);
         $session_survey->setAvailableFrom($available_from);
         $session_survey->setAvailableDue($available_due);
-        $session_survey->setTitle($title);
+        $session_survey->setTitle(htmlspecialchars($title));
         $session_survey->setStatus($status);
         $_SESSION['session_survey'] = serialize($session_survey);
-        
+
         // check for groups
         $session_groups = array();
         $session_groups = get_session_groups();
@@ -2059,14 +2073,11 @@ function survey_funct() {
                 empty($session_groups['staff_departments']) &&
                 empty($session_groups['local'])) {
             $cookie_key = 'msg';
-            $cookie_value = 'Моля, добавете поне 1 група!';
+            $cookie_value = 'Моля, добавете поне една анкетна група!';
             setcookie($cookie_key, $cookie_value, time() + 1);
             header('Location: ' . ROOT_DIR . '?page=survey_edit');
             die();
         }
-
-        // get current time
-        $time_now = date("Y-m-d H:i:s");
 
         if (isset($session_groups['staff_departments']) && is_array($session_groups['staff_departments'])) {
             if (is_array($session_groups['staff'])) {
@@ -2076,12 +2087,16 @@ function survey_funct() {
             }
         }
 
+        $session_survey->setStudentGroups(serialize($session_groups['student']));
+        $session_survey->setStaffGroups(serialize($session_groups['staff']));
+        $session_survey->setLocalGroups(serialize($session_groups['local']));
+        
         if ($session_survey->getId() != NULL) {
             $session_survey->update_in_db();
             $_SESSION['session_survey'] = serialize($session_survey);
 
             $cookie_key = 'msg';
-            $cookie_value = 'Вие успешно редактирахте анкетата!';
+            $cookie_value = 'Вие успешно добавихте/редактирахте анкетата!';
             setcookie($cookie_key, $cookie_value, time() + 1);
             header('Location: ' . ROOT_DIR . '?page=survey_edit');
             die();
@@ -2430,7 +2445,7 @@ function user_funct() {
         }
         $session_user->update_in_db();
         $_SESSION['session_user'] = serialize($session_user);
-        
+
         $cookie_key = 'msg';
         $cookie_value = 'Вие успешно редактирахте потребител на системата!';
         setcookie($cookie_key, $cookie_value, time() + 1);
