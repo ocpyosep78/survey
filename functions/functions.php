@@ -1681,26 +1681,23 @@ function add_survey_element() {
         $session_survey->setId($survey_id);
         $_SESSION['session_survey'] = serialize($session_survey);
 
-        $session_question->setSurvey($session_survey->getId());
-        $session_question->setIsActive(1);
-        $session_question->getCreatedOn($time_now);
-        $session_question->getLastEditedOn($time_now);
         // store question in db
-        $session_question->store_in_db();
     } else {
         $session_survey->setLastEditedOn($time_now);
         $session_survey->update_in_db();
-        $session_question->setSurvey($session_survey->getId());
-        $session_question->setIsActive(1);
-        // store question in db
-        $session_question->store_in_db();
     }
 
-    echo '<pre>';
-    var_dump($session_survey);
-    var_dump($session_question);
-    echo '</pre>';
-//    die();
+    $session_question->setSurvey($session_survey->getId());
+    $session_question->setIsActive(1);
+    $session_question->setLastEditedOn($time_now);
+    
+    if (!is_int($session_question->getId())) {
+        $session_question->setCreatedOn($time_now);
+        $session_question->store_in_db();
+    } else {
+        $session_question->update_in_db();
+    }
+    
     // get last question id
     $sql = "SELECT id
             FROM questions
@@ -1737,6 +1734,8 @@ function add_survey_element() {
 
     $session_answers = array();
     $_SESSION['session_answers'] = serialize($session_answers);
+    $session_question = new Question();
+    $_SESSION['session_question'] = serialize($session_question);
 
     $cookie_key = 'msg';
     $cookie_value = 'Вие успешно добавихте/редактирахте елемент от анкетата!';
@@ -2090,13 +2089,13 @@ function survey_funct() {
         $session_survey->setStudentGroups(serialize($session_groups['student']));
         $session_survey->setStaffGroups(serialize($session_groups['staff']));
         $session_survey->setLocalGroups(serialize($session_groups['local']));
-        
+
         if ($session_survey->getId() != NULL) {
             $session_survey->update_in_db();
             $_SESSION['session_survey'] = serialize($session_survey);
 
             $cookie_key = 'msg';
-            $cookie_value = 'Вие успешно добавихте/редактирахте анкетата!';
+            $cookie_value = 'Вие успешно добавихте/редактирахте анкета!';
             setcookie($cookie_key, $cookie_value, time() + 1);
             header('Location: ' . ROOT_DIR . '?page=survey_edit');
             die();

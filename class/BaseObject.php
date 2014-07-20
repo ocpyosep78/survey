@@ -9,7 +9,12 @@ class BaseObject {
     private $last_edited_on;
 
     public function setId($id) {
-        $this->id = $id;
+        try {
+            $this->id = intval($id);
+        } catch (Exception $ex) {
+            error($ex->getMessage());
+            $this->id = NULL;
+        }
         return $this;
     }
 
@@ -21,7 +26,7 @@ class BaseObject {
         if (!isset($is_active)) {
             $is_active = 1;
         }
-        $this->is_active = $is_active;        
+        $this->is_active = $is_active;
         return $this;
     }
 

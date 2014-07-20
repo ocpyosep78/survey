@@ -322,7 +322,7 @@ define('EDIT_SURVEY_PAGE_ADD_ELEMENT_ELEMENT_TYPE_TEXTBOX_INFO', 'Изберет
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TITLE', 'Поделементи:');
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_ADD_SUBELEMENT_TITLE', 'Добавете поделемент към елемент от анкетата');
 define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_DELETE_TEXTBOX', 'Изтрийте текстово поле');
-define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TEXTBOX_TITLE', 'Съдържание на текстово поле');
+define('EDIT_SURVEY_PAGE_ADD_ELEMENT_SUBELEMENTS_TEXTBOX_TITLE', 'Съдържание на свободния текст');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_AFTER', 'След като добавите желаните от Вас отговори затворете текущия раздела в browser-а и презаредете страницата (F5).');
 
 define('SURVEY_SUBELEMENT_CLOSE_WINDOW', 'Кликнете, за да затворите прозореца');
@@ -413,10 +413,10 @@ define('SURVEY_EDIT_PAGE_ADD_QUESTION', 'Добавете отговор към 
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE', 'Тип на поделемента');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_INFO', 'Изберете тип за поделемента на анкетата');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_NULL', 'Изберете тип на поделемента');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXT', 'Свободен текст');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXT', 'Текстово поле');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_CHECKBOX', 'Чек бутон');
 define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_RADIO', 'Радио бутон');
-define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXTBOX', 'Текстово поле');
+define('SURVEY_QUESTION_PAGE_ADD_ANSWER_TYPE_TEXTBOX', 'Свободен текст');
 
 define('SURVEY_ROLE_PAGE_ADMIN_TITLE', 'Администратор на "СУ Анкета"');
 define('SURVEY_ROLE_PAGE_ADMIN_INFO', '
