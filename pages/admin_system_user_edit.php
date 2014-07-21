@@ -265,6 +265,12 @@ $session_user = admin_get_session_user();
                                                type="submit"
                                                value="<?php echo BTN_SURVEY_VIEW; ?>"
                                                style="margin-left: 50px;" />
+                                        <input id="formSurveyPrintExcel" 
+                                               class="button button-orange" 
+                                               name="formSurveyPrintExcel" 
+                                               type="submit"
+                                               value="<?php echo BTN_PRINT_RESULTS_XLS; ?>"
+                                               style="margin-left: 50px;" />
                                         <input name="formSurveyFunction" value="<?php print_r($survey->getId()); ?>" type="hidden" />
                                     </form>
                                     <br />
