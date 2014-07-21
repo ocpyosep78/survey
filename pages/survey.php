@@ -95,37 +95,40 @@
                                             <label for = "formSurvey<?php print_r($question->getId()); ?>Answer<?php print_r($answer->getId()); ?>"><?php print_r($answer->getValue()); ?>
                                                 <small><?php print_r($answer->getDescription()); ?></small>
                                             </label>
-                                            <input id="formSurvey<?php print_r($question->getId()); ?>Answer<?php print_r($answer->getId()); ?>" 
-                                            <?php
-                                            if ($answer->getType() == "radio") {
-                                                print 'name="formSurvey' . $question->getId() . 'Answer" ';
-                                            } else {
-                                                print 'name="formSurvey' . $question->getId() . 'Answer' . $answer->getId() . 'Type' . $answer->getType() . '" ';
-                                            }
-                                            ?>type="<?php print $answer->getType(); ?>"
-                                                   value="<?php
-                                                   if (($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
-                                                       print_r($answer_id);
-                                                   } elseif (($answer->getType() == "text") && ($has_answered == TRUE)) {
-                                                       print_r($vote->getValue());
-                                                   }
-                                                   ?>"
-                                                   <?php
-                                                   if ($has_answered == TRUE) {
-                                                       if (($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
-                                                           ?>
-                                                           checked="checked"
-                                                           <?php
-                                                       }
-                                                       ?>
-                                                       disabled="disabled"
-                                                       <?php
-                                                   }
-                                                   ?> />
+                                            <input 
+                                                id="formSurvey<?php print_r($question->getId()); ?>Answer<?php print_r($answer->getId()); ?>" 
+                                                <?php
+                                                if ($answer->getType() == "radio") {
+                                                    print 'name="formSurvey' . $question->getId() . 'Answer" ';
+                                                } else {
+                                                    print 'name="formSurvey' . $question->getId() . 'Answer' . $answer->getId() . 'Type' . $answer->getType() . '" ';
+                                                }
+                                                ?>
+                                                type="<?php print $answer->getType(); ?>"
+                                                value="<?php
+                                                if (($answer->getType() == "radio") || ($answer->getType() == "checkbox")) {
+                                                    print_r($answer_id);
+                                                } elseif (($answer->getType() == "text") && ($has_answered == TRUE)) {
+                                                    print_r($vote->getValue());
+                                                }
+                                                ?>"
+                                                <?php
+                                                if ($has_answered == TRUE) {
+                                                    if ((($answer->getType() == "radio") || ($answer->getType() == "checkbox")) && !empty($user_vote_by_answer)) {
+                                                        ?>
+                                                        checked="checked"
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                    disabled="disabled"
+                                                    <?php
+                                                }
+                                                ?>
+                                                />
                                             <br/><br/>
-                                            <?php
-                                        }
-                                        ?>
+                    <?php
+                }
+                ?>
                                     </section>
                                 </div>
                                 <br/>
@@ -149,17 +152,17 @@
                                 </div>
                             </form>
                             <br/><br/>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                    <?php
-                }
-                // check if text or question
+                <?php
             }
             ?>
+                    </div>
+                        <?php
+                    }
+                    // check if text or question
+                }
+                ?>
         </div>
-        <?php
-    }
-    ?>
+            <?php
+        }
+        ?>
 </div>

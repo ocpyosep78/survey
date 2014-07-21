@@ -297,7 +297,7 @@ $session_user = admin_get_session_user();
                         $survey = new Survey();
                         $survey->get_from_db($survey_id);
                         ?>
-                        <h3 class="no-float ac"><?php echo $survey_id . " "; print_r($survey->getTitle()); ?></h3>
+                        <h3 class="no-float ac"><?php print_r($survey->getTitle()); ?></h3>
                         <div>
                             <form id="formSurveyVote" class="form ac" action="<?php echo ROOT_DIR; ?>?page=survey_user&amp;funct=survey_funct" method="POST">
                                 <?php
