@@ -126,43 +126,45 @@
                                                 ?>
                                                 />
                                             <br/><br/>
-                    <?php
-                }
-                ?>
+                                            <?php
+                                        }
+                                        ?>
                                     </section>
                                 </div>
-                                <br/>
-                                <div class="action no-margin ac" style="padding-left: 20px;">
-                                    <input id="formSurvey<?php print_r($question->getId()); ?>Submit"
-                                           class="button button-green"
-                                           name="formSurveySubmit"
-                                           type="submit"
-                                           value="<?php echo BTN_SUBMIT; ?>"/>
-                                    <input id="formSurvey<?php print_r($question->getId()); ?>Reset"
-                                           class="button button-orange"
-                                           name="formSurveyReset"
-                                           type="reset"
-                                           value="<?php echo BTN_RESET; ?>"/>
-                                    <input type="hidden"
-                                           name="formSurvey"
-                                           value="formSurvey<?php print_r($question->getId()); ?>Submit">
-                                    <a class="button button-red fl" 
-                                       style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 
-                                       href="<?php print_r(ROOT_DIR . '?page=user_survey'); ?>"><?php echo BTN_CANCEL; ?></a>
-                                </div>
+                                <?php if ($has_answered == FALSE) { ?>
+                                    <br/>
+                                    <div class="action no-margin ac" style="padding-left: 20px;">
+                                        <input id="formSurvey<?php print_r($question->getId()); ?>Submit"
+                                               class="button button-green"
+                                               name="formSurveySubmit"
+                                               type="submit"
+                                               value="<?php echo BTN_SUBMIT; ?>"/>
+                                        <input id="formSurvey<?php print_r($question->getId()); ?>Reset"
+                                               class="button button-orange"
+                                               name="formSurveyReset"
+                                               type="reset"
+                                               value="<?php echo BTN_RESET; ?>"/>
+                                        <input type="hidden"
+                                               name="formSurvey"
+                                               value="formSurvey<?php print_r($question->getId()); ?>Submit">
+                                        <a class="button button-red fl" 
+                                           style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 
+                                           href="<?php print_r(ROOT_DIR . '?page=user_survey'); ?>"><?php echo BTN_CANCEL; ?></a>
+                                    </div>
+                                <?php } ?>
                             </form>
                             <br/><br/>
-                <?php
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    <?php
+                }
+                // check if text or question
             }
             ?>
-                    </div>
-                        <?php
-                    }
-                    // check if text or question
-                }
-                ?>
         </div>
-            <?php
-        }
-        ?>
+        <?php
+    }
+    ?>
 </div>

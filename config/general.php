@@ -2,7 +2,7 @@
 
 date_default_timezone_set('Europe/Sofia');
 
-// include the base class
+// include the classes
 require_once ROOT_DIR . 'class/Config.php';
 require_once ROOT_DIR . 'class/BaseObject.php';
 require_once ROOT_DIR . 'class/Answer.php';
@@ -24,7 +24,7 @@ try {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->exec("SET NAMES utf8");
 } catch (Exception $e) {
-    echo $e->getMessage();
+    error($e->getMessage());
     return;
 }
 

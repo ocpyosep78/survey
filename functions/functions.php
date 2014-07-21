@@ -237,22 +237,19 @@ function get_available_by_user_surveys($user_id) {
     $available_by_user_surveys = array();
     foreach ($available_by_time_surveys as $survey_id) {
         // check whether is already voted
-        $user_voted_surveys = get_voted_surveys_by_user($user_id);
-        if (!in_array($survey_id, $user_voted_surveys)) {
-            // get survey groups
-            $survey_staff_groups = get_survey_staff_groups($survey_id);
-            $survey_student_groups = get_survey_student_groups($survey_id);
-            $survey_local_groups = get_survey_local_groups($survey_id);
+        // get survey groups
+        $survey_staff_groups = get_survey_staff_groups($survey_id);
+        $survey_student_groups = get_survey_student_groups($survey_id);
+        $survey_local_groups = get_survey_local_groups($survey_id);
 
-            // get common groups
-            $staff_groups = array_intersect($user_staff_groups, $survey_staff_groups);
-            $student_groups = array_intersect($user_student_groups, $survey_student_groups);
-            $local_groups = array_intersect($user_local_groups, $survey_local_groups);
+        // get common groups
+        $staff_groups = array_intersect($user_staff_groups, $survey_staff_groups);
+        $student_groups = array_intersect($user_student_groups, $survey_student_groups);
+        $local_groups = array_intersect($user_local_groups, $survey_local_groups);
 
-            // get all available surveys
-            if (!empty($staff_groups) || !empty($student_groups) || !empty($local_groups)) {
-                array_push($available_by_user_surveys, $survey_id);
-            }
+        // get all available surveys
+        if (!empty($staff_groups) || !empty($student_groups) || !empty($local_groups)) {
+            array_push($available_by_user_surveys, $survey_id);
         }
     }
 
@@ -1020,7 +1017,10 @@ function survey_submit() {
     foreach ($survey_keys as $key) {
         // get question
         preg_match_all('!\d+!', $key, $matches);
-        $question = $matches[0][0];
+        $question_id = $matches[0][0];
+
+        $question = new Question();
+        $question->get_from_db($question_id);
 
         //get answer value
         $answer_value = $_POST[$key];
@@ -1040,7 +1040,8 @@ function survey_submit() {
         $vote->setCreatedOn($time_now);
         $vote->setLastEditedOn($time_now);
         $vote->setUser($user->getId());
-        $vote->setQuestion($question);
+        $vote->setSurvey($question->getSurvey());
+        $vote->setQuestion($question_id);
         $vote->setAnswer($answer_id);
         $vote->setValue($answer_value);
         $vote->store_in_db();
@@ -1690,14 +1691,14 @@ function add_survey_element() {
     $session_question->setSurvey($session_survey->getId());
     $session_question->setIsActive(1);
     $session_question->setLastEditedOn($time_now);
-    
+
     if (!is_int($session_question->getId())) {
         $session_question->setCreatedOn($time_now);
         $session_question->store_in_db();
     } else {
         $session_question->update_in_db();
     }
-    
+
     // get last question id
     $sql = "SELECT id
             FROM questions
@@ -2155,6 +2156,25 @@ function survey_funct() {
 
         var_dump($_SESSION);
         header('Location: ' . ROOT_DIR . '?page=survey');
+        die();
+    } elseif ($function == 'PrintExcel') {
+        // get global user object
+        global $user;
+
+        // get survey id
+        $survey_id = $_POST['formSurveyFunction'];
+
+        // check if the user is the surveyCreator or systemAdmin
+        $survey = new Survey();
+        $survey->get_from_db($survey_id);
+
+        if ((intval($survey->getCreatedBy()) != $user->getId()) && ($user->getAdmin() != 1)) {
+            logout();
+            die();
+        }
+
+        header('Location: ' . ROOT_DIR . 'functions/print/excel/surveyReport.php?survey_id=' . $survey_id);
+
         die();
     }
     die();

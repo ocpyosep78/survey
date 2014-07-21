@@ -42,6 +42,7 @@ if (isset($_SESSION['group_users'])) {
     <div class="accordion">
         <?php
         $surveys_by_user = get_available_by_user_surveys($user->getId());
+        
         if (!empty($surveys_by_user)) {
             foreach ($surveys_by_user as $survey_id) {
                 $survey = new Survey();

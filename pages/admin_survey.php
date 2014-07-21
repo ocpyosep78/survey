@@ -57,11 +57,17 @@ if (isset($_SESSION['group_users'])) {
                                   class="form ac prefix_2" 
                                   action="./?page=admin_surveys&amp;funct=survey_funct" 
                                   method="POST">
-                                <input id="formSurveyView" 
+                                <input id="formSurveyEdit" 
                                        class="button button-green" 
                                        name="formSurveyEdit" 
                                        type="submit"
                                        value="<?php echo BTN_SURVEY_VIEW; ?>"
+                                       style="margin-left: 50px;" />
+                                <input id="formSurveyPrintExcel" 
+                                       class="button button-orange" 
+                                       name="formSurveyPrintExcel" 
+                                       type="submit"
+                                       value="<?php echo BTN_PRINT_RESULTS_XLS; ?>"
                                        style="margin-left: 50px;" />
                                 <input name="formSurveyFunction" value="<?php print_r($survey->getId()); ?>" type="hidden" />
                             </form>

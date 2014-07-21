@@ -80,6 +80,25 @@ class Question extends BaseObject {
         $db->exec($sql);
     }
     
+    // get answers
+    function get_answers() {
+        //include connection variable
+        global $db;
+        
+        // sql statement
+        $sql = "SELECT id
+                FROM answers
+                WHERE is_active='1' AND survey_id='" . $this->getId() . "'";
+
+        $answers = array();
+        $index = 0;
+        foreach ($db->query($sql) as $key => $value) {
+            $answers[$index] = $value['id'];
+            $index++;
+        }
+        return $answers;
+    }
+    
     public function setSurvey($survey) {
         $this->survey = $survey;
         return $this;
