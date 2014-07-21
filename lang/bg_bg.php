@@ -277,6 +277,7 @@ define('BTN_DELETE', 'Изтрий');
 define('BTN_ENTER', 'Вход');
 define('BTN_SURVEY_VIEW', 'Преглед анкета');
 define('BTN_ADD', 'Добави');
+define('BTN_PRINT_RESULTS_XLS', 'Резултати в .XLS');
 
 define('REQUIRED_FIELDS', 'Полетата със <b style="color: red; font-style: normal;">*</b> са задължителни.');
 
