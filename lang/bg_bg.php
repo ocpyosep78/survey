@@ -276,6 +276,8 @@ define('BTN_EDIT', 'Редактирай');
 define('BTN_DELETE', 'Изтрий');
 define('BTN_ENTER', 'Вход');
 define('BTN_SURVEY_VIEW', 'Преглед анкета');
+define('BTN_SURVEY_VOTE_VIEW', 'Преглед гласуване');
+define('BTN_SURVEY_VOTE_DELETE', 'Изтрий гласуване');
 define('BTN_ADD', 'Добави');
 define('BTN_PRINT_RESULTS_XLS', 'Резултати в .XLS');
 

@@ -1707,7 +1707,7 @@ function add_survey_element() {
         foreach ($db->query($sql) as $key => $value) {
             $data[$key] = $value;
         }
-        
+
         // set id to session question
         $session_question->setId($data[0]['id']);
     } else {
@@ -2176,6 +2176,46 @@ function survey_funct() {
 
         header('Location: ' . ROOT_DIR . 'functions/print/excel/surveyReport.php?survey_id=' . $survey_id);
 
+        die();
+    } elseif ($function == 'UserVoteDelele') {
+        // get global user object
+        global $user;
+
+        // secure the function
+        if ($user->getAdmin() != 1) {
+            logout();
+            die();
+        }
+
+        $user_id = $_GET['user_id'];
+        $survey_id = $_POST['formSurveyFunction'];
+
+        $surveyFunctions = new SurveyFunctions();
+        $surveyFunctions->get_from_db($survey_id);
+        $surveyVotes = array();
+        $surveyVotes = $surveyFunctions->getVotesByUser($user_id);
+
+        $user = new User();
+        $user->get_from_db($user_id);
+
+        if (!empty($surveyVotes)) {
+            foreach ($surveyVotes as $surveyVoteId) {
+                $surveyVote = new Vote();
+                $surveyVote->get_from_db($surveyVoteId);
+                $surveyVote->setIsActive(0);
+                $surveyVote->update_in_db();
+            }
+            $cookieKey = 'msg';
+            $cookieValue = 'Гласуването на съответния потребител беше успешно изтрито!';
+            setcookie($cookieKey, $cookieValue, time() + 1);
+            header('Location: ' . ROOT_DIR . '?page=admin_system_user_edit');
+            die();
+        }
+
+        $cookieKey = 'msg';
+        $cookieValue = 'Няма налично гласуването за съответния потребител!';
+        setcookie($cookieKey, $cookieValue, time() + 1);
+        header('Location: ' . ROOT_DIR . '?page=admin_system_user_edit');
         die();
     }
     die();

@@ -8,6 +8,7 @@ require_once ROOT_DIR . 'class/BaseObject.php';
 require_once ROOT_DIR . 'class/Answer.php';
 require_once ROOT_DIR . 'class/Group.php';
 require_once ROOT_DIR . 'class/Survey.php';
+require_once ROOT_DIR . 'class/SurveyFunctions.php';
 require_once ROOT_DIR . 'class/User.php';
 require_once ROOT_DIR . 'class/Vote.php';
 require_once ROOT_DIR . 'class/Message.php';

@@ -7,6 +7,7 @@ if ($user->getAdmin() != 1) {
     logout();
     die();
 }
+$session_user = new User();
 $session_user = admin_get_session_user();
 ?>
 <script type="text/javascript" src="<?php echo ROOT_DIR; ?>js/jquery-1.9.1.js"></script>
@@ -278,7 +279,7 @@ $session_user = admin_get_session_user();
                             </div>
                         </div>
                         <?php
-                        // close survey search
+                        // close created by user surveys
                     }
                 }
                 ?>
@@ -287,7 +288,7 @@ $session_user = admin_get_session_user();
         <?php
     }
     if ($session_user->getCanVote() == 1) {
-        $surveys_votes = get_voted_surveys_by_user($session_user->getId());
+        $surveys_votes = get_available_by_user_surveys($session_user->getId());
         ?>
         <br/>
         <div class="ac info_box box_green">
@@ -305,53 +306,39 @@ $session_user = admin_get_session_user();
                         ?>
                         <h3 class="no-float ac"><?php print_r($survey->getTitle()); ?></h3>
                         <div>
-                            <form id="formSurveyVote" class="form ac" action="<?php echo ROOT_DIR; ?>?page=survey_user&amp;funct=survey_funct" method="POST">
-                                <?php
-                                $votes = get_vote_by_user_and_survey($session_user->getId(), $survey->getId());
-                                if ($votes != null) {
-                                    ?>
-                                    <div class="ac">
-                                        <section class="clearfix prefix_2">
-                                            <?php
-                                            foreach ($votes as $vote_id) {
-                                                $vote = new Vote();
-                                                $vote->get_from_db($vote_id);
-                                                $answer = new Answer();
-                                                $answer->get_from_db($vote->getAnswer());
-                                                ?>
-                                                <label for = "formSurveyAnswer<?php print_r($survey->getId()); ?>"><?php print_r($answer->getValue()); ?>
-                                                    <small><?php print_r($answer->getDescription()); ?></small>
-                                                </label>
-                                                <input id="formSurvey<?php print_r($survey->getId()); ?>Answer<?php print_r($answer->getId()); ?>" 
-                                                       name="formSurvey<?php print_r($survey->getId()); ?>Answer<?php print_r($answer->getId()); ?>"
-                                                       disabled="disabled"
-                                                       type="<?php print_r($answer->getType()); ?>"
-                                                       value="<?php print_r($vote->getValue()); ?>"
-                                                       <?php
-                                                       if ($answer->getType() == "radio" || $answer->getType() == "checkbox") {
-                                                           ?>
-                                                           checked="checked"
-                                                           <?php
-                                                       }
-                                                       ?> />
-                                                <br/>
-                                                <?php
-                                            }
-                                            ?>
-                                        </section>
-                                    </div>
-                                    <br/>
-                                    <div class="action no-margin ac prefix_2">
-                                        <input id="formSurveyVoteDelete" class="button button-red" name="formSurveyVoteDelete" type="submit" value="<?php echo BTN_DELETE; ?>" style="margin-left: 60px;" />
+                            <div class="ac">
+                                <div class="action no-margin ac">
+                                    <form id="formSurveyUserVote<?php print_r($survey->getId()); ?>"
+                                          class="form ac prefix_2" 
+                                          action="./?page=admin_system_user_edit&amp;funct=survey_funct&amp;user_id=<?php echo $session_user->getId(); ?>" 
+                                          method="POST">
+                                        <input id="formSurveyView" 
+                                               class="button button-green" 
+                                               name="formSurveyEdit" 
+                                               type="submit"
+                                               value="<?php echo BTN_SURVEY_VIEW; ?>"
+                                               style="margin-left: 50px;" />
+                                        <input id="formSurveyPrintExcel" 
+                                               class="button button-orange" 
+                                               name="formSurveyPrintExcel" 
+                                               type="submit"
+                                               value="<?php echo BTN_PRINT_RESULTS_XLS; ?>"
+                                               style="margin-left: 50px;" />
+                                        <input id="formSurveyUserVoteDelele" 
+                                               class="button button-red" 
+                                               name="formSurveyUserVoteDelele" 
+                                               type="submit"
+                                               value="<?php echo BTN_SURVEY_VOTE_DELETE; ?>"
+                                               style="margin-left: 50px;" />
                                         <input name="formSurveyFunction" value="<?php print_r($survey->getId()); ?>" type="hidden" />
-                                    </div>
-                                    <?php
-                                }
-                                ?>
-                            </form>
+                                    </form>
+                                    <br />
+                                </div>
+                            </div>
                             <br/><br/><br/>
                         </div>
                         <?php
+                        // close available by user surveys
                     }
                 }
                 ?>
