@@ -47,9 +47,6 @@
                 <div class="al">
                     <?php
                     $answers = get_survey_answers($question->getId());
-                    
-                    var_dump($answers);
-                    
                     foreach ($answers as $answer_id) {
                         $answer = new Answer ();
                         $answer->get_from_db($answer_id);
