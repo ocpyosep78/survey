@@ -47,7 +47,6 @@
                 <div class="al">
                     <?php
                     $answers = get_survey_answers($question->getId());
-
                     foreach ($answers as $answer_id) {
                         $answer = new Answer ();
                         $answer->get_from_db($answer_id);
@@ -73,9 +72,7 @@
                         if (!empty($user_answers_by_question)) {
                             $has_answered = TRUE;
                         }
-
                         $answers = get_survey_answers($question->getId());
-
                         if (!empty($answers)) {
                             ?>
                             <form id="formQuestion<?php print_r($question->getId()); ?>" class="form ac" action="<?php echo ROOT_DIR . '?page=survey&funct=survey_submit' ?>" method="POST">
