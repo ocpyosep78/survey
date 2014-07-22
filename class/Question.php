@@ -88,7 +88,7 @@ class Question extends BaseObject {
         // sql statement
         $sql = "SELECT id
                 FROM answers
-                WHERE is_active='1' AND survey_id='" . $this->getId() . "'";
+                WHERE is_active='1' AND question='" . $this->getId() . "'";
 
         $answers = array();
         $index = 0;

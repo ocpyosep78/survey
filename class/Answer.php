@@ -3,7 +3,7 @@
 // main survey class
 class Answer extends BaseObject {
 
-    private $survey;
+    private $question;
     private $value;
     private $description;
     private $type;
@@ -28,7 +28,7 @@ class Answer extends BaseObject {
             $this->setIsActive($answer_data[0]['is_active']);
             $this->setCreatedOn($answer_data[0]['created_on']);
             $this->setLastEditedOn($answer_data[0]['last_edited_on']);
-            $this->setSurvey($answer_data[0]['survey_id']);
+            $this->setQuestion($answer_data[0]['question']);
             $this->setValue($answer_data[0]['value']);
             $this->setDescription($answer_data[0]['description']);
             $this->setType($answer_data[0]['type']);
@@ -44,12 +44,12 @@ class Answer extends BaseObject {
 
         // sql statement
         $sql = "INSERT INTO answers
-                (is_active, created_on, last_edited_on, survey_id,
+                (is_active, created_on, last_edited_on, question,
                 value, description, type)
                 VALUES ('".$this->getIsActive()."',
                         '".$this->getCreatedOn()."',
                         '".$this->getLastEditedOn()."',
-                        '".$this->getSurvey()."',
+                        '".$this->getQuestion()."',
                         '".$this->getValue()."',
                         '".$this->getDescription()."',
                         '".$this->getType()."');";
@@ -66,7 +66,7 @@ class Answer extends BaseObject {
         $sql = "UPDATE answers
                 SET is_active = '".$this->getIsActive()."',
                     last_edited_on = '".$this->getLastEditedOn()."',
-                    survey_id = '".$this->getSurvey()."',
+                    question = '".$this->getQuestion()."',
                     value = '".$this->getValue()."',
                     type = '".$this->getType()."',
                     description = '".$this->getDescription()."'
@@ -75,13 +75,13 @@ class Answer extends BaseObject {
         $db->exec($sql);
     }
     
-    public function setSurvey($survey) {
-        $this->survey = $survey;
+    public function setQuestion($question) {
+        $this->question = $question;
         return $this;
     }
 
-    public function getSurvey() {
-        return $this->survey;
+    public function getQuestion() {
+        return $this->question;
     }
 
     public function setValue($value) {

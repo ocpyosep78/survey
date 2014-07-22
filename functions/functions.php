@@ -257,14 +257,14 @@ function get_available_by_user_surveys($user_id) {
 }
 
 // get all associated survey answers
-function get_survey_answers($survey_id) {
+function get_survey_answers($question_id) {
     // set connection var
     global $db;
 
     //query to get all associated survey answers
     $sql = "SELECT id
             FROM answers
-            WHERE is_active = '1' AND survey_id = '$survey_id';";
+            WHERE is_active = '1' AND question = '$question_id';";
 
     $answers_data = array();
     $answers = array();
@@ -1692,26 +1692,26 @@ function add_survey_element() {
     $session_question->setIsActive(1);
     $session_question->setLastEditedOn($time_now);
 
-    if (!is_int($session_question->getId())) {
+    if (!is_int($session_question->getId()) || !($session_question->getId() > 0)) {
         $session_question->setCreatedOn($time_now);
         $session_question->store_in_db();
-    } else {
-        $session_question->update_in_db();
-    }
 
-    // get last question id
-    $sql = "SELECT id
+        // get last question id
+        $sql = "SELECT id
             FROM questions
             WHERE is_active = '1'
             ORDER BY id DESC
             LIMIT 1;";
 
-    $data = array();
-    foreach ($db->query($sql) as $key => $value) {
-        $data[$key] = $value;
+        $data = array();
+        foreach ($db->query($sql) as $key => $value) {
+            $data[$key] = $value;
+        }
+        // set id to session question
+        $session_question->setId($data[0]['id']);
+    } else {
+        $session_question->update_in_db();
     }
-    // set id to session question
-    $question_id = $data[0]['id'];
 
     // unset session question to release memory
     $question_empty = new Question();
@@ -1721,7 +1721,7 @@ function add_survey_element() {
     foreach ($session_answers as $session_answer) {
         $answer = new Answer();
         $answer = $session_answer;
-        $answer->setSurvey($question_id);
+        $answer->setQuestion($session_question->getId());
         $answer->setIsActive(1);
         $answer->setLastEditedOn($time_now);
 
