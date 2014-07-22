@@ -1,0 +1,6 @@
+deny from all
+
+<Files "surveyReport.php">
+     Order Deny,Allow
+     Allow from All
+</Files>

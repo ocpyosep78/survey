@@ -1692,6 +1692,7 @@ function add_survey_element() {
     $session_question->setIsActive(1);
     $session_question->setLastEditedOn($time_now);
 
+    // check if the question exists in db
     if (!is_int($session_question->getId()) || !($session_question->getId() > 0)) {
         $session_question->setCreatedOn($time_now);
         $session_question->store_in_db();
@@ -1702,11 +1703,11 @@ function add_survey_element() {
             WHERE is_active = '1'
             ORDER BY id DESC
             LIMIT 1;";
-
         $data = array();
         foreach ($db->query($sql) as $key => $value) {
             $data[$key] = $value;
         }
+        
         // set id to session question
         $session_question->setId($data[0]['id']);
     } else {
