@@ -27,7 +27,6 @@ class Error {
     private $ip;
 
     function __construct() {
-        parent::__construct();
         $a = func_get_args();
         $i = func_num_args();
         if (method_exists($this, $f = '__construct' . $i)) {

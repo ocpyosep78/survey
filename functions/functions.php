@@ -32,6 +32,11 @@ function get_current_time() {
     return date("Y-m-d H:i:s");
 }
 
+// get current date
+function get_current_date() {
+    return date("Y-m-d");
+}
+
 function exceptions_error_handler($severity, $message, $filename, $lineno) {
     if (error_reporting() == 0) {
         return;
@@ -1077,12 +1082,12 @@ function login_mysql($username, $password) {
     }
 
     // write info log
-    $info = "Username: '$username' - try to login";
-    info($info);
+    $info = new Info("Username: '$username' - try to login");
+    $info->writeLog();
 
     if (isset($user_data[0])) {
-        $info = "Username: '$username' - login success";
-        info($info);
+        $info = new Info("Username: '$username' - login success");
+        $info->writeLog();
 
         // create user obj
         $user = new User();
@@ -1096,8 +1101,8 @@ function login_mysql($username, $password) {
         header('location:' . $url);
         die();
     } else {
-        $error = "Username: '$username' - login fail. No such username or password";
-        error($error);
+        $error = new Error("Username: '$username' - login fail. No such username or password");
+        $error->writeLog();
 
         // set message cookie
         $cookie_key = 'msg';
@@ -1280,12 +1285,12 @@ function login_ldap($username, $password) {
                 }
             }
         } catch (Exception $e) {
-            $error = "User: $username failed login: $e";
-            error($error);
+            $error = new Error("User: $username failed login:" . $e->getMessage());
+            $error->writeLog();
         }
     } else {
-        $error = "LDAP server unenable";
-        error($error);
+        $error = new Error("LDAP server unenable");
+        $error->writeLog();
     }
 }
 
@@ -1386,15 +1391,7 @@ function add_survey_group_type() {
         }
     }
 
-    echo '<pre>';
-    var_dump($session_groups);
-    echo '</pre>';
-
     $session_groups['type'] = $_POST['formSurveyAddGroupType'];
-
-    echo '<pre>';
-    var_dump($session_groups);
-    echo '</pre>';
 
     $_SESSION['session_groups'] = serialize($session_groups);
 
