@@ -683,7 +683,7 @@ $session_answers = get_session_answers();
                               style="padding-bottom: 50px">
                             <div class="action no-margin ac prefix_1" style="margin-bottom: 20px;">
                                 <input id="formSurvey<?php print_r($question->getId()); ?>Submit"
-                                       class="button button-orange"
+                                       class="button button-green"
                                        name="formElementEdit"
                                        type="submit"
                                        value="<?php echo BTN_EDIT; ?>"
@@ -707,7 +707,7 @@ $session_answers = get_session_answers();
                     <div>
                         <form id="formSurvey<?php print_r($question->getId()); ?>" 
                               class="form ac" 
-                              action="<?php echo ROOT_DIR . '?page=survey_edit&amp;funct=edit_survey_element' ?>" 
+                              action="<?php echo ROOT_DIR . '?page=survey_edit&amp;funct=elementFunction' ?>" 
                               method="POST">
                             <div class="ac">
                                 <section class="clearfix prefix_2">
@@ -752,15 +752,21 @@ $session_answers = get_session_answers();
                                 </section>
                             </div>
                             <br/>
-                            <div class="action no-margin ac prefix_1">
-                                <input id="formQuestion<?php print_r($question->getId()); ?>Submit"
-                                       class="button button-orange"
+                            <div class="action no-margin ac">
+                                <input id="formElement<?php print_r($question->getId()); ?>Submit"
+                                       class="button button-green"
                                        name="formElementEdit"
                                        type="submit"
                                        value="<?php echo BTN_EDIT; ?>"
                                        style="margin-left: 30px;" />
+                                <input id="formElement<?php print_r($question->getId()); ?>Submit"
+                                       class="button button-orange"
+                                       name="formElementPrintExcel"
+                                       type="submit"
+                                       value="<?php echo BTN_PRINT_RESULTS_XLS; ?>"
+                                       />
                                 <input type="hidden"
-                                       name="formElementId"
+                                       name="formElementFunction"
                                        value="<?php print_r($question->getId()); ?>">
                                 <a class="button button-red fl" 
                                    style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 

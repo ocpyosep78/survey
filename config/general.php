@@ -3,7 +3,10 @@
 date_default_timezone_set('Europe/Sofia');
 
 // include the classes
+require_once ROOT_DIR . 'functions/functions.php';
 require_once ROOT_DIR . 'class/Config.php';
+require_once ROOT_DIR . 'class/Error.php';
+require_once ROOT_DIR . 'class/Info.php';
 require_once ROOT_DIR . 'class/BaseObject.php';
 require_once ROOT_DIR . 'class/Answer.php';
 require_once ROOT_DIR . 'class/Group.php';

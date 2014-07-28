@@ -15,13 +15,17 @@ try {
 // include the base files
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/functions/functions.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/BaseObject.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Error.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Info.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Answer.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Group.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Survey.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/SurveyFunctions.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/User.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Vote.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Message.php';
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/Question.php';
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/QuestionFunctions.php';
 
 $survey = new Survey();
 $survey->get_from_db($survey_id);

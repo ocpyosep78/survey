@@ -27,6 +27,11 @@ function logout() {
 // set custom error handler
 set_error_handler('exceptions_error_handler');
 
+// get current time
+function get_current_time() {
+    return date("Y-m-d H:i:s");
+}
+
 function exceptions_error_handler($severity, $message, $filename, $lineno) {
     if (error_reporting() == 0) {
         return;
@@ -64,9 +69,9 @@ function info($info) {
 
 // write error log
 function error($error) {
-
     // set connection var
     global $db;
+
     $error = "";
 
     // escape injection string error var
@@ -2216,6 +2221,94 @@ function survey_funct() {
         $cookieValue = 'Няма налично гласуването за съответния потребител!';
         setcookie($cookieKey, $cookieValue, time() + 1);
         header('Location: ' . ROOT_DIR . '?page=admin_system_user_edit');
+        die();
+    }
+    die();
+}
+
+// survey function
+function elementFunction() {
+    // get global user object
+    global $user;
+
+    // set connection var
+    global $db;
+
+    // get current time
+    $time_now = date("Y-m-d H:i:s");
+
+    // protect from unauthorized access
+    if (!isset($user) or ! isset($_POST['formElementFunction'])) {
+        logout();
+        die();
+    }
+
+    // set empty survey
+    $session_question = new Question();
+    $session_question = get_session_question();
+
+    $question_id = $_POST['formElementFunction'];
+    if ($question_id != "") {
+        $session_question->get_from_db($question_id);
+    }
+
+    // get the function
+    $function = '';
+
+    foreach ($_POST as $key => $post) {
+        if ($post != $question_id) {
+            $function = substr($key, 11);
+        }
+    }
+
+    if ($function == 'Edit') {
+        // set security
+        $survey = new Survey();
+        $survey->get_from_db($session_question->getSurvey());
+        if ($survey->getCreatedBy() != $user->getId()) {
+            if ($user->getAdmin() != 1) {
+                logout();
+                die();
+            }
+        }
+
+        $_SESSION['session_question'] = serialize($session_question);
+
+        // get session answers
+        $session_answers = array();
+        $session_answer_ids = get_survey_answers($session_question->getId());
+        foreach ($session_answer_ids as $answer_id) {
+            $answer = new Answer();
+            $answer->get_from_db($answer_id);
+            array_push($session_answers, $answer);
+        }
+        $_SESSION['session_answers'] = serialize($session_answers);
+
+        $cookie_key = 'msg';
+        $cookie_value = 'Вие избрахте елемент от анкетата за редакция!<br />Отидете на раздел "Добавете или редактирайте елемент към анкетата"';
+        setcookie($cookie_key, $cookie_value, time() + 1);
+        header('Location: ' . ROOT_DIR . '?page=survey_edit');
+        die();
+    } elseif ($function == 'PrintExcel') {
+        // get global user object
+        global $user;
+
+        // get survey id
+        $question_id = $_POST['formElementFunction'];
+
+        // check if the user is the surveyCreator or systemAdmin
+        $question = new Question();
+        $question->get_from_db($question_id);
+        $survey = new Survey();
+        $survey->get_from_db($question->getSurvey());
+
+        if ((intval($survey->getCreatedBy()) != $user->getId()) && ($user->getAdmin() != 1)) {
+            $error = new Error("Question PrintExcel: unathorised access");
+            $error->writeLog();
+            logout();
+            die();
+        }
+        header('Location: ' . ROOT_DIR . 'functions/print/excel/questionReport.php?question_id=' . $question_id);
         die();
     }
     die();
