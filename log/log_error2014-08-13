@@ -1,0 +1,12 @@
+2014-08-13 17:52:55 94.26.19.137 User: boryanan failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-13 17:52:55 94.26.19.137 Username: 'boryanan' - login fail. No such username or password
+2014-08-13 17:53:05 94.26.19.137 User: boryanan failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-13 17:53:05 94.26.19.137 Username: 'boryanan' - login fail. No such username or password
+2014-08-13 17:53:15 94.26.19.137 User: boryanann failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-13 17:53:15 94.26.19.137 Username: 'boryanann' - login fail. No such username or password
+2014-08-13 17:53:56 94.26.19.137 User: borjanan failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-08-13 17:53:56 94.26.19.137 Username: 'borjanan' - login fail. No such username or password
+2014-08-13 18:35:26 213.91.137.224 Username: 'monikai1' - login fail. No such username or password
+2014-08-13 18:35:35 213.91.137.224 Username: 'monikai1' - login fail. No such username or password
+2014-08-13 18:35:42 213.91.137.224 User: monikai1 failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-08-13 18:35:42 213.91.137.224 Username: 'monikai1' - login fail. No such username or password

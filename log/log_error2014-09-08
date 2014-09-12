@@ -1,0 +1,17 @@
+2014-09-08 06:23:52 213.91.137.224 User: monikai1 failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-08 06:23:52 213.91.137.224 Username: 'monikai1' - login fail. No such username or password
+2014-09-08 06:23:59 213.91.137.224 User: monikai1 failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-08 06:23:59 213.91.137.224 Username: 'monikai1' - login fail. No such username or password
+2014-09-08 06:24:06 213.91.137.224 User: monikai1 failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-08 06:24:06 213.91.137.224 Username: 'monikai1' - login fail. No such username or password
+2014-09-08 06:24:10 213.91.137.224 User: monikai1 failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-08 06:24:10 213.91.137.224 Username: 'monikai1' - login fail. No such username or password
+2014-09-08 10:54:23 91.191.208.2 User: o.kunchev failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-08 10:54:23 91.191.208.2 Username: 'o.kunchev' - login fail. No such username or password
+2014-09-08 15:28:11 94.26.21.226 User: elisavetpv@uni-sofia.bg failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-08 15:28:11 94.26.21.226 Username: 'elisavetpv@uni-sofia.bg' - login fail. No such username or password
+2014-09-08 18:34:35 78.83.112.127 Username: 'nkvelkov' - login fail. No such username or password
+2014-09-08 18:34:47 78.83.112.127 User: nkvelkov failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-08 18:34:47 78.83.112.127 Username: 'nkvelkov' - login fail. No such username or password
+2014-09-08 22:57:51 94.236.141.170 User: thstanchev failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-08 22:57:51 94.236.141.170 Username: 'thstanchev' - login fail. No such username or password

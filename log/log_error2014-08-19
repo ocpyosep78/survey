@@ -1,0 +1,2 @@
+2014-08-19 00:58:08 213.91.150.226 User: kolev failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-08-19 00:58:08 213.91.150.226 Username: 'kolev' - login fail. No such username or password

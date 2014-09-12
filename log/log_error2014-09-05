@@ -1,0 +1,24 @@
+2014-09-05 11:57:21 89.215.156.53 User: uuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:21 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:24 89.215.156.53 User: uuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:24 89.215.156.53 Username: 'uuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:26 89.215.156.53 User: uuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:26 89.215.156.53 Username: 'uuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:28 89.215.156.53 User: uuuuuuuuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:28 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:30 89.215.156.53 User: uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:30 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:32 89.215.156.53 User: uuuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:32 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:34 89.215.156.53 User: uuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:34 89.215.156.53 Username: 'uuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:36 89.215.156.53 User: uuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:36 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:37 89.215.156.53 User: uuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:37 89.215.156.53 Username: 'uuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:39 89.215.156.53 User: uuuuuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:39 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:41 89.215.156.53 User: uuuuuuuuuuuuuuuuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:41 89.215.156.53 Username: 'uuuuuuuuuuuuuuuuuuuuuu' - login fail. No such username or password
+2014-09-05 11:57:46 89.215.156.53 User: uuuuuuuu failed login:ldap_bind(): Unable to bind to server: No such object
+2014-09-05 11:57:46 89.215.156.53 Username: 'uuuuuuuu' - login fail. No such username or password

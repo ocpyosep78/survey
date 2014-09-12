@@ -1,0 +1,5 @@
+2014-08-28 14:38:54 91.134.55.68 User: vasilena Gerassi failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-28 14:38:54 91.134.55.68 Username: 'vasilena Gerassi' - login fail. No such username or password
+2014-08-28 14:39:51 91.134.55.68 User: Vasilena Gerasi failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-28 14:39:51 91.134.55.68 Username: 'Vasilena Gerasi' - login fail. No such username or password
+2014-08-28 16:47:22 62.44.96.184 User: surveyadmin failed login:ldap_bind(): Unable to bind to server: No such object

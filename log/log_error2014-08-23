@@ -1,0 +1,2 @@
+2014-08-23 18:45:18 5.53.169.68 User: 2373 failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-23 18:45:18 5.53.169.68 Username: '2373' - login fail. No such username or password

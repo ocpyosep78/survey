@@ -1,0 +1,2 @@
+2014-08-04 19:56:20 98.211.100.236 User: jkdaniela failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-04 19:56:20 98.211.100.236 Username: 'jkdaniela' - login fail. No such username or password

@@ -1,0 +1,8 @@
+2014-07-30 09:43:00 95.91.75.26 User: pvvenkova failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-07-30 09:43:00 95.91.75.26 Username: 'pvvenkova' - login fail. No such username or password
+2014-07-30 11:56:52 94.155.130.218 User: vasilam failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-07-30 11:56:52 94.155.130.218 Username: 'vasilam' - login fail. No such username or password
+2014-07-30 14:55:44 62.44.96.129 User: surveyadmin failed login:ldap_bind(): Unable to bind to server: No such object
+2014-07-30 15:13:10 62.44.96.129 User: surveyadmin failed login:ldap_bind(): Unable to bind to server: No such object
+2014-07-30 20:47:32 87.120.33.103 User: damjanj failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-07-30 20:47:32 87.120.33.103 Username: 'damjanj' - login fail. No such username or password

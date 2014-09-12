@@ -1,0 +1,3 @@
+2014-08-15 14:23:57 95.42.231.201 User: surveyadmin failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-15 14:53:30 95.111.81.16 User: vslaveev failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-08-15 14:53:30 95.111.81.16 Username: 'vslaveev' - login fail. No such username or password

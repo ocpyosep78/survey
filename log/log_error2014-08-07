@@ -1,0 +1,2 @@
+2014-08-07 19:53:00 78.90.184.72 User: gljuckanov failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-08-07 19:53:00 78.90.184.72 Username: 'gljuckanov' - login fail. No such username or password

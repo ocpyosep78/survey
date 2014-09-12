@@ -1,0 +1,4 @@
+2014-09-01 08:58:03 78.90.48.48 User: ptomeva failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-01 08:58:03 78.90.48.48 Username: 'ptomeva' - login fail. No such username or password
+2014-09-01 08:58:42 78.90.48.48 User: ptomeva failed login:ldap_bind(): Unable to bind to server: Invalid credentials
+2014-09-01 08:58:42 78.90.48.48 Username: 'ptomeva' - login fail. No such username or password

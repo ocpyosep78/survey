@@ -1,0 +1,2 @@
+2014-08-18 15:39:19 88.203.232.9 User: smvelichkova failed login:ldap_bind(): Unable to bind to server: No such object
+2014-08-18 15:39:19 88.203.232.9 Username: 'smvelichkova' - login fail. No such username or password
