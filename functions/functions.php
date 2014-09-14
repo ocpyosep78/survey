@@ -2818,4 +2818,88 @@ function get_user_vote_by_answer($user_id, $answer_id) {
     return $votes;
 }
 
+function egnDecode($egn) {
+    $gender = 0;
+    $birthYear = "";
+
+    error_reporting(E_ALL);
+
+    $EGN_WEIGHTS = array(2, 4, 8, 5, 10, 9, 7, 3, 6);
+
+    /* Check if EGN is valid */
+    /* See: http://www.grao.bg/esgraon.html */
+    function egn_valid($egn) {
+        global $EGN_WEIGHTS;
+        if (strlen($egn) != 10)
+            return false;
+        $year = substr($egn, 0, 2);
+        $mon = substr($egn, 2, 2);
+        $day = substr($egn, 4, 2);
+        if ($mon > 40) {
+            if (!checkdate($mon - 40, $day, $year + 2000))
+                return false;
+        } else
+        if ($mon > 20) {
+            if (!checkdate($mon - 20, $day, $year + 1800))
+                return false;
+        } else {
+            if (!checkdate($mon, $day, $year + 1900))
+                return false;
+        }
+        $checksum = substr($egn, 9, 1);
+        $egnsum = 0;
+        for ($i = 0; $i < 9; $i++)
+            $egnsum += substr($egn, $i, 1) * $EGN_WEIGHTS[$i];
+        $valid_checksum = $egnsum % 11;
+        if ($valid_checksum == 10)
+            $valid_checksum = 0;
+        if ($checksum == $valid_checksum)
+            return true;
+    }
+
+    /* Return array with EGN info */
+    function egn_parse($egn) {
+        global $gender;
+        global $birthYear;
+
+        global $EGN_REGIONS;
+        if (!egn_valid($egn))
+            return false;
+        $ret = array();
+        $ret["year"] = substr($egn, 0, 2);
+        $ret["month"] = substr($egn, 2, 2);
+        $ret["day"] = substr($egn, 4, 2);
+        if ($ret["month"] > 40) {
+            $ret["month"] -= 40;
+            $ret["year"] += 2000;
+        } else
+        if ($ret["month"] > 20) {
+            $ret["month"] -= 20;
+            $ret["year"] += 1800;
+        } else {
+            $ret["year"] += 1900;
+        }
+
+        $ret["sex"] = substr($egn, 8, 1) % 2;
+        $birthYear = $ret["year"];
+        $gender = 1;
+        if (!$ret["sex"]) {
+            $gender = 0;
+        }
+        return $ret;
+    }
+
+    $egn = preg_replace("/[^0-9]/", "", @$_GET["egn"]);
+    if (isset($_GET["egn"])) {
+        egn_parse($egn);
+    }
+
+    $egnArray = array(
+        "gender" => $gender,
+        "birthYear" => $birthYear
+    );
+
+    return $egnArray;
+}
+
 ?>

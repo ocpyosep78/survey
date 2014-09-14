@@ -61,7 +61,7 @@ class UserFunctions extends User {
     }
 
     // get ldap attribute
-    function getLdapAttribute() {
+    function getLdapEgnInfo() {
         $ldapAttributeValue = "";
 
         // ldap connecting: must be a valid LDAP server!
@@ -79,13 +79,9 @@ class UserFunctions extends User {
                 // data array 
                 $array = array('supersonalid');
                 $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
-
                 $info = ldap_get_entries($ds, $sr);
 
-                header("Content-type: text/html; charset=utf8;");
-
-                var_dump($info[0]['supersonalid'][0]);
-                exit();
+                $ldapAttributeValue = egnDecode($info[0]['supersonalid'][0]);
 
                 ldap_close($ds);
             }
@@ -95,15 +91,12 @@ class UserFunctions extends User {
         }
         return $ldapAttributeValue;
     }
-
+    
     function getGender() {
-        $gender = 0;
+        $gender = NULL;
+        if(isset($this->getLdapEgnInfo()['gender'])) {
+            $gender = $this->getLdapEgnInfo()['gender'];
+        }
         return $gender;
     }
-
-    function getBirthYear() {
-        $birthYear = 1990;
-        return $birthYear;
-    }
-
 }
