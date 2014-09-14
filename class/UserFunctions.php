@@ -73,6 +73,8 @@ class UserFunctions extends User {
             $ldaprdn = 'uid=schedule,ou=System,dc=uni-sofia,dc=bg';
             $ldappass = 'Ahchit7chu';
 
+            $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
+            
             if ($ldapbind) {
                 // data array 
 //            $array = array("displayname", "mail", "title", "suscientifictitle", "suscientificdegree", "suFaculty", "suDepartment", "suStudentFaculty", "ou", "objectclass");
