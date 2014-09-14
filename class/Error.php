@@ -49,7 +49,7 @@ class Error {
     function writeLog() {
         $date = get_current_date();
 
-        $filename = '/log/log_error' . $date;
+        $filename = '../log/log_error' . $date;
 
         if (!file_exists($filename)) {
             $fp = fopen($filename, "wa");
