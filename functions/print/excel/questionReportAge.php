@@ -34,8 +34,6 @@ $question->get_from_db($question_id);
 
 // get question's age groups
 $questionVotedUsersBirthYears = $question->getVotedUsersBirthYear();
-//var_dump($questionVotedUsersBirthYears);
-//exit();
 
 // get voted users
 $voted_users = $question->getVotedUsers();
@@ -166,9 +164,9 @@ foreach ($questionVotedUsersBirthYears as $questionVotedUsersBirthYear) {
     // create new sheet
     $objPHPExcel->createSheet(NULL, $sheetId);
 
-//    // Rename worksheet
-//    $question_number = $sheetId + 1;
-//    $objPHPExcel->getActiveSheet()->setTitle("Group" . $sheetId);
+    // Rename worksheet
+    $question_number = $sheetId + 1;
+    $objPHPExcel->getActiveSheet()->setTitle($questionVotedUsersBirthYearTitle);
 
     // increase sheet id
     $sheetId++;
