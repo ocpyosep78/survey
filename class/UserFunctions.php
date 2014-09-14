@@ -83,8 +83,7 @@ class UserFunctions extends User {
                 $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=martinpa)", $array, 0, 0, 0);
 
                 $info = ldap_get_entries($ds, $sr);
-                $attrs = ldap_get_attributes($ds, $sr);
-
+                
                 header("Content-type: text/html; charset=utf8;");
 
                 var_dump($sr);
