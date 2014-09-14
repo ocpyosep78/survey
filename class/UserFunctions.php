@@ -62,7 +62,7 @@ class UserFunctions extends User {
 
     // get ldap attribute
     function getLdapAttribute() {
-//        $ldapAttributeValue = $ldapAttributeName;
+        $ldapAttributeValue = "";
 
         // ldap connecting: must be a valid LDAP server!
         $ds = ldap_connect("ds.uni-sofia.bg");
@@ -73,34 +73,26 @@ class UserFunctions extends User {
             $ldaprdn = 'uid=schedule,ou=System,dc=uni-sofia,dc=bg';
             $ldappass = 'Ahchit7chu';
 
-            try {
-                $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
-
-                if ($ldapbind) {
-                    // data array 
+            if ($ldapbind) {
+                // data array 
 //            $array = array("displayname", "mail", "title", "suscientifictitle", "suscientificdegree", "suFaculty", "suDepartment", "suStudentFaculty", "ou", "objectclass");
-                    $array = array();
+                $array = array();
 //                    $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
-$sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=martinpa)", $array, 0, 0, 0);
+                $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=martinpa)", $array, 0, 0, 0);
 
-                    $info = ldap_get_entries($ds, $sr);
-                    $attrs = ldap_get_attributes($ds, $sr);
-                    
-                    header("Content-type: text/html; charset=utf8;");
-                    
-                    var_dump($attrs);
-                    exit();
+                $info = ldap_get_entries($ds, $sr);
+                $attrs = ldap_get_attributes($ds, $sr);
 
-                    ldap_close($ds);
-                }
-            } catch (Exception $exc) {
-                echo $exc->getTraceAsString();
-//                $error = new Error($exc->getMessage());
-//                $error->writeLog();
+                header("Content-type: text/html; charset=utf8;");
+
+                var_dump($attrs);
+                exit();
+
+                ldap_close($ds);
             }
         } else {
-//            $error = new Error("LDAP server unavailable");
-//            $error->writeLog();
+            $error = new Error("LDAP server unavailable");
+            $error->writeLog();
         }
         return $ldapAttributeValue;
     }
