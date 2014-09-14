@@ -145,7 +145,7 @@ class UserFunctions extends User {
                 $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
                 $info = ldap_get_entries($ds, $sr);
 //                $ldapAttributeValue = egnDecode($info[0]['supersonalid'][0]);
-                egn_parse($info[0]['supersonalid'][0]);
+                $this->egn_parse($info[0]['supersonalid'][0]);
 
                 ldap_close($ds);
             }
