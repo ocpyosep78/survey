@@ -84,7 +84,7 @@ class UserFunctions extends User {
 
                 header("Content-type: text/html; charset=utf8;");
 
-                var_dump($info[0]);
+                var_dump($info[0]['supersonalid'][0]);
                 exit();
 
                 ldap_close($ds);
