@@ -62,7 +62,7 @@ class UserFunctions extends User {
 
     // get ldap attribute
     function getLdapAttribute($ldapAttributeName) {
-        $ldapAttributeValue = "";
+        $ldapAttributeValue = $ldapAttributeName;
 
         // ldap connecting: must be a valid LDAP server!
         $ds = ldap_connect("ds.uni-sofia.bg");
@@ -95,12 +95,12 @@ $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=martinpa)", $array,
                 }
             } catch (Exception $exc) {
                 echo $exc->getTraceAsString();
-                $error = new Error($exc->getMessage());
-                $error->writeLog();
+//                $error = new Error($exc->getMessage());
+//                $error->writeLog();
             }
         } else {
-            $error = new Error("LDAP server unavailable");
-            $error->writeLog();
+//            $error = new Error("LDAP server unavailable");
+//            $error->writeLog();
         }
         return $ldapAttributeValue;
     }
