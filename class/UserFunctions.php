@@ -74,19 +74,17 @@ class UserFunctions extends User {
             $ldappass = 'Ahchit7chu';
 
             $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
-            
+
             if ($ldapbind) {
                 // data array 
-//            $array = array("displayname", "mail", "title", "suscientifictitle", "suscientificdegree", "suFaculty", "suDepartment", "suStudentFaculty", "ou", "objectclass");
-                $array = array();
-//                    $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
-                $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=martinpa)", $array, 0, 0, 0);
+                $array = array(supersonalid);
+                $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
 
                 $info = ldap_get_entries($ds, $sr);
-                
+
                 header("Content-type: text/html; charset=utf8;");
 
-                var_dump($info[0]);
+                var_dump($info);
                 exit();
 
                 ldap_close($ds);
