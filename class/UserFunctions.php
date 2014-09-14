@@ -77,7 +77,7 @@ class UserFunctions extends User {
 
             if ($ldapbind) {
                 // data array 
-                $array = array(supersonalid);
+                $array = array('supersonalid');
                 $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
 
                 $info = ldap_get_entries($ds, $sr);
