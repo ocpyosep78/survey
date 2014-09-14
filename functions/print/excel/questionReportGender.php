@@ -40,6 +40,7 @@ $surveyGroups = $survey->getAllGroupsArray();
 
 // get voted users
 $voted_users = $question->getVotedUsers();
+
 // get question answers
 $question_answers = $question->get_answers();
 
@@ -105,7 +106,11 @@ $row_id = 3;
 foreach ($voted_users as $voted_user_id) {
     $user = new UserFunctions();
     $user->get_from_db($voted_user_id);
-
+    echo '<pre>';
+    var_dump($user->getLdapAttribute("NULL"));
+    echo '</pre>';
+    exit();
+    
     if ($user->getGender() == 0) {
 
         $cell = 'A' . $row_id;

@@ -1118,8 +1118,7 @@ function login_mysql($username, $password) {
 
 // login ldap
 function login_ldap($username, $password) {
-    // ldap connecting
-    // must be a valid LDAP server!
+    // ldap connecting: must be a valid LDAP server!
     $ds = ldap_connect("ds.uni-sofia.bg");
 
     // try ldap bind
@@ -1130,9 +1129,6 @@ function login_ldap($username, $password) {
             $userbind = ldap_bind($ds, $user_dn, $password);
             // verify binding
             if ($userbind) {
-
-                header('Content-Type: text/html; charset=utf-8');
-
                 // set ldap bind variables
                 $ldaprdn = 'uid=survey,ou=People,dc=uni-sofia,dc=bg';
                 $ldappass = 'fee2noh7Sh';
@@ -1289,7 +1285,7 @@ function login_ldap($username, $password) {
             $error->writeLog();
         }
     } else {
-        $error = new Error("LDAP server unenable");
+        $error = new Error("LDAP server unavailable");
         $error->writeLog();
     }
 }

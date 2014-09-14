@@ -60,13 +60,55 @@ class UserFunctions extends User {
         return array_merge($this->getStudentGroupsArray(), $this->getStaffGroupsArray(), $this->getLocalGroupsArray());
     }
 
+    // get ldap attribute
+    function getLdapAttribute($ldapAttributeName) {
+        $ldapAttributeValue = "";
+
+        // ldap connecting: must be a valid LDAP server!
+        $ds = ldap_connect("ds.uni-sofia.bg");
+
+        // try ldap bind
+        if ($ds) {
+            // set ldap bind variables
+            $ldaprdn = 'uid=survey,ou=People,dc=uni-sofia,dc=bg';
+            $ldappass = 'fee2noh7Sh';
+
+            try {
+                $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
+
+                if ($ldapbind) {
+                    // data array 
+//            $array = array("displayname", "mail", "title", "suscientifictitle", "suscientificdegree", "suFaculty", "suDepartment", "suStudentFaculty", "ou", "objectclass");
+                    $array = array();
+                    $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
+
+                    $info = ldap_get_entries($ds, $sr);
+
+                    var_dump($info);
+                    exit();
+
+                    ldap_close($ds);
+                }
+            } catch (Exception $exc) {
+                echo $exc->getTraceAsString();
+                $error = new Error($exc->getMessage());
+                $error->writeLog();
+            }
+        } else {
+            $error = new Error("LDAP server unavailable");
+            $error->writeLog();
+        }
+        return $ldapAttributeValue;
+    }
+
     function getGender() {
         $gender = 0;
         return $gender;
     }
-    
+
     function getBirthYear() {
         $birthYear = 1990;
         return $birthYear;
     }
+
 }
