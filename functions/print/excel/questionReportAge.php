@@ -34,8 +34,8 @@ $question->get_from_db($question_id);
 
 // get question's age groups
 $questionVotedUsersBirthYears = $question->getVotedUsersBirthYear();
-var_dump($questionVotedUsersBirthYears);
-exit();
+//var_dump($questionVotedUsersBirthYears);
+//exit();
 
 // get voted users
 $voted_users = $question->getVotedUsers();
