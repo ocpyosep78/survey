@@ -107,7 +107,7 @@ foreach ($voted_users as $voted_user_id) {
     $user = new UserFunctions();
     $user->get_from_db($voted_user_id);
     echo '<pre>';
-    var_dump($user->getLdapAttribute("NULL"));
+    var_dump($user->getLdapAttribute());
     echo '</pre>';
     exit();
     

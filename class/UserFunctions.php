@@ -61,8 +61,8 @@ class UserFunctions extends User {
     }
 
     // get ldap attribute
-    function getLdapAttribute($ldapAttributeName) {
-        $ldapAttributeValue = $ldapAttributeName;
+    function getLdapAttribute() {
+//        $ldapAttributeValue = $ldapAttributeName;
 
         // ldap connecting: must be a valid LDAP server!
         $ds = ldap_connect("ds.uni-sofia.bg");
