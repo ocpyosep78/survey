@@ -282,6 +282,8 @@ define('BTN_SURVEY_VOTE_VIEW', 'Преглед гласуване');
 define('BTN_SURVEY_VOTE_DELETE', 'Изтрий гласуване');
 define('BTN_ADD', 'Добави');
 define('BTN_PRINT_RESULTS_XLS', 'Резултати в .XLS');
+define('BTN_PRINT_RESULTS_USERS', 'Резултати по потребители');
+define('BTN_PRINT_RESULTS_GROUPS', 'Резултати по групи');
 
 define('REQUIRED_FIELDS', 'Полетата със <b style="color: red; font-style: normal;">*</b> са задължителни.');
 

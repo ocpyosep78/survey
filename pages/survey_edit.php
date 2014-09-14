@@ -752,24 +752,30 @@ $session_answers = get_session_answers();
                                 </section>
                             </div>
                             <br/>
-                            <div class="action no-margin ac">
+                            <div class="action no-margin ac prefix_2">
                                 <input id="formElement<?php print_r($question->getId()); ?>Submit"
-                                       class="button button-green"
+                                       class="button button-blue"
                                        name="formElementEdit"
                                        type="submit"
                                        value="<?php echo BTN_EDIT; ?>"
-                                       style="margin-left: 30px;" />
+                                       style="margin-left: 50px;" />
                                 <input id="formElement<?php print_r($question->getId()); ?>Submit"
-                                       class="button button-orange"
+                                       class="button button-blue"
                                        name="formElementPrintExcel"
                                        type="submit"
-                                       value="<?php echo BTN_PRINT_RESULTS_XLS; ?>"
-                                       />
+                                       value="<?php echo BTN_PRINT_RESULTS_USERS; ?>"
+                                       style="margin-left: 50px;" />
+                                <input id="formElement<?php print_r($question->getId()); ?>Submit"
+                                       class="button button-blue"
+                                       name="formElementPrintExcelGroups"
+                                       type="submit"
+                                       value="<?php echo BTN_PRINT_RESULTS_GROUPS; ?>"
+                                       style="margin-left: 50px;" />
                                 <input type="hidden"
                                        name="formElementFunction"
                                        value="<?php print_r($question->getId()); ?>">
-                                <a class="button button-red fl" 
-                                   style="color: #fff; width: 230px; margin: 2px 0px 0px 10px;" 
+                                <a class="button button-blue fl" 
+                                   style="color: #fff; width: 230px; margin: 2px 0px 0px 50px;" 
                                    href="<?php print_r(ROOT_DIR . '?page=survey_edit&amp;funct=delete_question&amp;question_id=' . $question->getId()); ?>"><?php echo BTN_DELETE; ?></a>
                             </div>
                         </form>
