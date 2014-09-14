@@ -60,6 +60,70 @@ class UserFunctions extends User {
         return array_merge($this->getStudentGroupsArray(), $this->getStaffGroupsArray(), $this->getLocalGroupsArray());
     }
 
+    private $gender = 0;
+    private $birthYear = "";
+    private $EGN_WEIGHTS = array(2, 4, 8, 5, 10, 9, 7, 3, 6);
+
+    /* Check if EGN is valid */
+    /* See: http://www.grao.bg/esgraon.html */
+    function egn_valid($egn) {
+        if (strlen($egn) != 10)
+            return false;
+        $year = substr($egn, 0, 2);
+        $mon = substr($egn, 2, 2);
+        $day = substr($egn, 4, 2);
+        if ($mon > 40) {
+            if (!checkdate($mon - 40, $day, $year + 2000))
+                return false;
+        } else
+        if ($mon > 20) {
+            if (!checkdate($mon - 20, $day, $year + 1800))
+                return false;
+        } else {
+            if (!checkdate($mon, $day, $year + 1900))
+                return false;
+        }
+        $checksum = substr($egn, 9, 1);
+        $egnsum = 0;
+        for ($i = 0; $i < 9; $i++)
+            $egnsum += substr($egn, $i, 1) * $this->EGN_WEIGHTS[$i];
+        $valid_checksum = $egnsum % 11;
+        if ($valid_checksum == 10)
+            $valid_checksum = 0;
+        if ($checksum == $valid_checksum)
+            return true;
+    }
+
+    /* Return array with EGN info */
+    function egn_parse($egn) {
+        if (!egn_valid($egn))
+            return false;
+        $ret = array();
+        $ret["year"] = substr($egn, 0, 2);
+        $ret["month"] = substr($egn, 2, 2);
+        $ret["day"] = substr($egn, 4, 2);
+        if ($ret["month"] > 40) {
+            $ret["month"] -= 40;
+            $ret["year"] += 2000;
+        } else
+        if ($ret["month"] > 20) {
+            $ret["month"] -= 20;
+            $ret["year"] += 1800;
+        } else {
+            $ret["year"] += 1900;
+        }
+
+        $ret["sex"] = substr($egn, 8, 1) % 2;
+
+        $this->birthYear = $ret["year"];
+        $this->gender = 1;
+
+        if (!$ret["sex"]) {
+            $this->gender = 0;
+        }
+        return $ret;
+    }
+
     // get ldap attribute
     function getLdapEgnInfo() {
         $ldapAttributeValue = "";
@@ -80,8 +144,8 @@ class UserFunctions extends User {
                 $array = array('supersonalid');
                 $sr = ldap_search($ds, "ou=People,dc=uni-sofia,dc=bg", "(uid=" . $this->getUsername() . ")", $array, 0, 0, 0);
                 $info = ldap_get_entries($ds, $sr);
-
                 $ldapAttributeValue = egnDecode($info[0]['supersonalid'][0]);
+                egn_parse($info[0]['supersonalid'][0]);
 
                 ldap_close($ds);
             }
@@ -89,12 +153,16 @@ class UserFunctions extends User {
             $error = new Error("LDAP server unavailable");
             $error->writeLog();
         }
-        return $ldapAttributeValue;
+        $egnArray = array(
+            "gender" => $this->gender,
+            "birthYear" => $this->birthYear
+        );
+        return $egnArray;
     }
-    
+
     function getGender() {
         $gender = NULL;
-        if(isset($this->getLdapEgnInfo()['gender'])) {
+        if (isset($this->getLdapEgnInfo()['gender'])) {
             $gender = $this->getLdapEgnInfo()['gender'];
         }
         return $gender;
