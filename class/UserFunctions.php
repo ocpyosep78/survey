@@ -96,7 +96,7 @@ class UserFunctions extends User {
 
     /* Return array with EGN info */
     function egn_parse($egn) {
-        if (!egn_valid($egn))
+        if (!$this->egn_valid($egn))
             return false;
         $ret = array();
         $ret["year"] = substr($egn, 0, 2);
