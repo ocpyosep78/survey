@@ -86,7 +86,7 @@ class UserFunctions extends User {
                 
                 header("Content-type: text/html; charset=utf8;");
 
-                var_dump($sr);
+                var_dump($info[0]);
                 exit();
 
                 ldap_close($ds);
