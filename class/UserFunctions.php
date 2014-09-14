@@ -60,4 +60,13 @@ class UserFunctions extends User {
         return array_merge($this->getStudentGroupsArray(), $this->getStaffGroupsArray(), $this->getLocalGroupsArray());
     }
 
+    function getGender() {
+        $gender = 0;
+        return $gender;
+    }
+    
+    function getBirthYear() {
+        $birthYear = 1990;
+        return $birthYear;
+    }
 }

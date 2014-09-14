@@ -2328,7 +2328,49 @@ function elementFunction() {
         }
         header('Location: ' . ROOT_DIR . 'functions/print/excel/questionReportGroups.php?question_id=' . $question_id);
         die();
-    } 
+    } elseif ($function == 'PrintExcelGender') {
+        // get global user object
+        global $user;
+
+        // get survey id
+        $question_id = $_POST['formElementFunction'];
+
+        // check if the user is the surveyCreator or systemAdmin
+        $question = new Question();
+        $question->get_from_db($question_id);
+        $survey = new Survey();
+        $survey->get_from_db($question->getSurvey());
+
+        if ((intval($survey->getCreatedBy()) != $user->getId()) && ($user->getAdmin() != 1)) {
+            $error = new Error("Question PrintExcelGender: unathorised access");
+            $error->writeLog();
+            logout();
+            die();
+        }
+        header('Location: ' . ROOT_DIR . 'functions/print/excel/questionReportGender.php?question_id=' . $question_id);
+        die();
+    } elseif ($function == 'PrintExcelAge') {
+        // get global user object
+        global $user;
+
+        // get survey id
+        $question_id = $_POST['formElementFunction'];
+
+        // check if the user is the surveyCreator or systemAdmin
+        $question = new Question();
+        $question->get_from_db($question_id);
+        $survey = new Survey();
+        $survey->get_from_db($question->getSurvey());
+
+        if ((intval($survey->getCreatedBy()) != $user->getId()) && ($user->getAdmin() != 1)) {
+            $error = new Error("Question PrintExcelAge: unathorised access");
+            $error->writeLog();
+            logout();
+            die();
+        }
+        header('Location: ' . ROOT_DIR . 'functions/print/excel/questionReportAge.php?question_id=' . $question_id);
+        die();
+    }
     die();
 }
 

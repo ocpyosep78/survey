@@ -32,6 +32,7 @@ $question->get_from_db($question_id);
 
 // get voted users
 $voted_users = $question->getVotedUsers();
+
 // get question answers
 $question_answers = $question->get_answers();
 

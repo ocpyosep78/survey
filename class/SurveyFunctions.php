@@ -57,7 +57,6 @@ class SurveyFunctions extends Survey {
     function getAllGroupsArray() {
         return array_merge($this->getStudentGroupsArray(), $this->getStaffGroupsArray(), $this->getLocalGroupsArray());
     }
-
 }
 
 ?>

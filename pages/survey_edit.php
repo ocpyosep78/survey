@@ -698,7 +698,6 @@ $session_answers = get_session_answers();
                         </form>
                     </div>
                 </div>
-
                 <div class="accordion">
                     <?php
                 } elseif ($question->getType() == 0) {
@@ -770,6 +769,18 @@ $session_answers = get_session_answers();
                                        name="formElementPrintExcelGroups"
                                        type="submit"
                                        value="<?php echo BTN_PRINT_RESULTS_GROUPS; ?>"
+                                       style="margin-left: 50px;" />
+                                <input id="formElement<?php print_r($question->getId()); ?>Submit"
+                                       class="button button-blue"
+                                       name="formElementPrintExcelGender"
+                                       type="submit"
+                                       value="<?php echo BTN_PRINT_RESULTS_GENDER; ?>"
+                                       style="margin-left: 50px;" />
+                                <input id="formElement<?php print_r($question->getId()); ?>Submit"
+                                       class="button button-blue"
+                                       name="formElementPrintExcelAge"
+                                       type="submit"
+                                       value="<?php echo BTN_PRINT_RESULTS_AGE; ?>"
                                        style="margin-left: 50px;" />
                                 <input type="hidden"
                                        name="formElementFunction"

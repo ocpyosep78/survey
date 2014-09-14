@@ -43,4 +43,9 @@ class QuestionFunctions extends Question {
         return $voted_users;
     }
 
+    // get voted users birth years
+    function getVotedUsersBirthYear() {
+        $votedUsersBirthYear = array();
+        return $votedUsersBirthYear;
+    }
 }

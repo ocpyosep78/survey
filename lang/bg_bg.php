@@ -284,6 +284,8 @@ define('BTN_ADD', 'Добави');
 define('BTN_PRINT_RESULTS_XLS', 'Резултати в .XLS');
 define('BTN_PRINT_RESULTS_USERS', 'Резултати по потребители');
 define('BTN_PRINT_RESULTS_GROUPS', 'Резултати по групи');
+define('BTN_PRINT_RESULTS_GENDER', 'Резултати по полове');
+define('BTN_PRINT_RESULTS_AGE', 'Резултати по възраст');
 
 define('REQUIRED_FIELDS', 'Полетата със <b style="color: red; font-style: normal;">*</b> са задължителни.');
 

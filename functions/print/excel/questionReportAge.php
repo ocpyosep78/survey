@@ -3,6 +3,9 @@
 // get survey id
 $question_id = $_GET['question_id'];
 
+echo 'age';
+exit();
+
 try {
     $db = new PDO('mysql' . ':host=' . 'localhost' . ';dbname=' . 'survey', 'survey', 'survey');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -32,11 +35,9 @@ require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/class/QuestionFunc
 $question = new QuestionFunctions();
 $question->get_from_db($question_id);
 
-// get question's survey groups
-$survey_id = $question->getSurvey();
-$survey = new SurveyFunctions();
-$survey->get_from_db($survey_id);
-$surveyGroups = $survey->getAllGroupsArray();
+// get question's age groups
+$questionVotedUsersBirthYears = $question->getVotedUsersBirthYear();
+
 // get voted users
 $voted_users = $question->getVotedUsers();
 // get question answers
@@ -62,28 +63,19 @@ $objPHPExcel = new PHPExcel();
 // Set document properties
 $objPHPExcel->getProperties()->setCreator("SU Survey")
         ->setLastModifiedBy("SU Survey")
-        ->setTitle("SU Survey - Question Group report")
-        ->setSubject("SU Survey - Question Group report")
-        ->setDescription("SU Survey - Question Group report")
+        ->setTitle("SU Survey - Question Age report")
+        ->setSubject("SU Survey - Question Age report")
+        ->setDescription("SU Survey - Question Age report")
         ->setKeywords("Sofia University,Survey,System,Results")
-        ->setCategory("Question Group Report");
+        ->setCategory("Question Age Report");
 
 // set sheet id
 $sheetId = 0;
 
 // set sheets
-foreach ($surveyGroups as $surveyGroupId) {
-    $surveyGroup = new Group();
-    $surveyGroup->get_from_db($surveyGroupId);
-    $surveyGroupTitle = "Group";
-    if ($surveyGroup->getStaff() == 1) {
-        $surveyGroupTitle .= " staff";
-    }
-    if ($surveyGroup->getStudent() == 1) {
-        $surveyGroupTitle .= " students";
-    }
-    $surveyGroupTitle .= ": " . $surveyGroup->getName();
-
+foreach ($questionVotedUsersBirthYears as $questionVotedUsersBirthYear) {
+    $questionVotedUsersBirthYearTitle = "Born " . $questionVotedUsersBirthYear;
+    
     // Add surveyGroup title
     $objPHPExcel->setActiveSheetIndex($sheetId)->mergeCells('A1:N1');
     $objPHPExcel->setActiveSheetIndex($sheetId)
@@ -120,7 +112,7 @@ foreach ($surveyGroups as $surveyGroupId) {
         $user = new UserFunctions();
         $user->get_from_db($voted_user_id);
 
-        if (in_array($surveyGroupId, $user->getAllGroupsArray())) {
+        if ($user->getBirthYear() == $questionVotedUsersBirthYear) {
             $cell = 'A' . $row_id;
             $user_number = $row_id - 2;
             $cell_value = 'User' . $user_number;
@@ -176,7 +168,7 @@ foreach ($surveyGroups as $surveyGroupId) {
 
     // Rename worksheet
     $question_number = $sheetId + 1;
-    $objPHPExcel->getActiveSheet()->setTitle("Group".$sheetId);
+    $objPHPExcel->getActiveSheet()->setTitle("Group" . $sheetId);
 
     // increase sheet id
     $sheetId++;
