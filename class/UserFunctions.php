@@ -70,8 +70,8 @@ class UserFunctions extends User {
         // try ldap bind
         if ($ds) {
             // set ldap bind variables
-            $ldaprdn = 'uid=survey,ou=People,dc=uni-sofia,dc=bg';
-            $ldappass = 'fee2noh7Sh';
+            $ldaprdn = 'uid=schedule,ou=System,dc=uni-sofia,dc=bg';
+            $ldappass = 'Ahchit7chu';
 
             try {
                 $ldapbind = ldap_bind($ds, $ldaprdn, $ldappass);
