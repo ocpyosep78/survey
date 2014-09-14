@@ -106,10 +106,6 @@ $row_id = 3;
 foreach ($voted_users as $voted_user_id) {
     $user = new UserFunctions();
     $user->get_from_db($voted_user_id);
-    echo '<pre>';
-    var_dump($user->getLdapAttribute());
-    echo '</pre>';
-    exit();
     
     if ($user->getGender() == 0) {
 
