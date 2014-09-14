@@ -7,8 +7,7 @@
     $request_uri = strtok($_SERVER["REQUEST_URI"],'?');
     $dns = $host . $request_uri;
     
-    if($dns != 'survey.uni-sofia.bg/') {
-        // set message cookie
+    if($dns != 'localhost/') {
         require_once 'functions/functions.php';
         logout();
     }

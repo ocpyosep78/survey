@@ -46,6 +46,17 @@ class QuestionFunctions extends Question {
     // get voted users birth years
     function getVotedUsersBirthYear() {
         $votedUsersBirthYear = array();
+        $votedUsers = $this->getVotedUsers();
+
+        foreach ($votedUsers as $votedUserId) {
+            $user = new UserFunctions();
+            $user->get_from_db($votedUserId);
+            array_push($votedUsersBirthYear, $user->getBirthYear());
+        }
+
+        $votedUsersBirthYear = array_unique($votedUsersBirthYear);
+        asort($votedUsersBirthYear);
         return $votedUsersBirthYear;
     }
+
 }

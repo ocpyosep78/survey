@@ -66,6 +66,7 @@ class UserFunctions extends User {
 
     /* Check if EGN is valid */
     /* See: http://www.grao.bg/esgraon.html */
+
     function egn_valid($egn) {
         if (strlen($egn) != 10)
             return false;
@@ -95,6 +96,7 @@ class UserFunctions extends User {
     }
 
     /* Return array with EGN info */
+
     function egn_parse($egn) {
         if (!$this->egn_valid($egn))
             return false;
@@ -162,9 +164,19 @@ class UserFunctions extends User {
 
     function getGender() {
         $gender = NULL;
-        if (isset($this->getLdapEgnInfo()['gender'])) {
-            $gender = $this->getLdapEgnInfo()['gender'];
+        $ldapEgnInfo = $this->getLdapEgnInfo();
+        if (isset($ldapEgnInfo['gender'])) {
+            $gender = $ldapEgnInfo['gender'];
         }
         return $gender;
+    }
+
+    function getBirthYear() {
+        $birthYear = NULL;
+        $ldapEgnInfo = $this->getLdapEgnInfo();
+        if (isset($ldapEgnInfo['birthYear'])) {
+            $birthYear = $ldapEgnInfo['birthYear'];
+        }
+        return $birthYear;
     }
 }

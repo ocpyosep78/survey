@@ -3,9 +3,6 @@
 // get survey id
 $question_id = $_GET['question_id'];
 
-echo 'age';
-exit();
-
 try {
     $db = new PDO('mysql' . ':host=' . 'localhost' . ';dbname=' . 'survey', 'survey', 'survey');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -37,9 +34,12 @@ $question->get_from_db($question_id);
 
 // get question's age groups
 $questionVotedUsersBirthYears = $question->getVotedUsersBirthYear();
+var_dump($questionVotedUsersBirthYears);
+exit();
 
 // get voted users
 $voted_users = $question->getVotedUsers();
+
 // get question answers
 $question_answers = $question->get_answers();
 
@@ -79,7 +79,7 @@ foreach ($questionVotedUsersBirthYears as $questionVotedUsersBirthYear) {
     // Add surveyGroup title
     $objPHPExcel->setActiveSheetIndex($sheetId)->mergeCells('A1:N1');
     $objPHPExcel->setActiveSheetIndex($sheetId)
-            ->setCellValue('A1', $surveyGroupTitle);
+            ->setCellValue('A1', $questionVotedUsersBirthYearTitle);
 
     // list answers
     $columnId = 1;
@@ -166,9 +166,9 @@ foreach ($questionVotedUsersBirthYears as $questionVotedUsersBirthYear) {
     // create new sheet
     $objPHPExcel->createSheet(NULL, $sheetId);
 
-    // Rename worksheet
-    $question_number = $sheetId + 1;
-    $objPHPExcel->getActiveSheet()->setTitle("Group" . $sheetId);
+//    // Rename worksheet
+//    $question_number = $sheetId + 1;
+//    $objPHPExcel->getActiveSheet()->setTitle("Group" . $sheetId);
 
     // increase sheet id
     $sheetId++;
